@@ -13,9 +13,9 @@ let personsGeoJSON = null;
 let selectedPerson = null;
 
 Promise.all([
-    fetch('/stations.geojson').then(response => response.json()),
-    fetch('/POIs.geojson').then(response => response.json()),
-    fetch('/persons.geojson').then(response => response.json())
+    fetch('/geojson/stations.geojson').then(response => response.json()),
+    fetch('/geojson/POIs.geojson').then(response => response.json()),
+    fetch('/geojson/persons.geojson').then(response => response.json())
 ]).then(([stationsData, POIsData, personsData]) => {
     stationsGeoJSON = stationsData;
     POIsGeoJSON = POIsData;
@@ -77,30 +77,35 @@ function initializeMap() {
             }
         });
     });
+
     // generate person markers from persons.geojson
-    personsGeoJSON.features.forEach(person => {
-        const personMarker = new maptilersdk.Marker({
-            color: '#008000',
-            size: 20,
-            anchor: 'bottom'
-        })
-            .setLngLat(person.geometry.coordinates)
+    personsGeoJSON.features.forEach(function(person) {
+        var el = document.createElement('div');
+        el.className = 'personMarker';
+        console.log(person.properties.name);
+        el.style.backgroundImage = `url(./img/${person.properties.name}.png)`;
+        el.style.width = '40px';
+        el.style.height = '40px';
+        el.style.backgroundSize = 'contain';
+        el.style.backgroundRepeat = 'no-repeat';
+        
+        const personMarker = new maptilersdk.Marker({element: el})
+            .setLngLat(person.geometry.coordinates)  // Changed from marker to person
             .setPopup(new maptilersdk.Popup().setText(person.properties.name))
             .addTo(map);
-    
+            
         personMarker.getElement().addEventListener('click', () => {
             personMarkerSelected = true;
             selectedPersonMarker = personMarker;
             selectedPerson = person;
-            document.getElementById('person-title').innerHTML = person.properties.name
-            document.getElementById('person-info').innerHTML = person.properties.info
+            document.getElementById('person-title').innerHTML = person.properties.name;
+            document.getElementById('person-info').innerHTML = person.properties.info;
             console.log('Person marker clicked', personMarker);
-            
         });
     });
 
     // initialize map itself and add layers
-    map.on('load', () => {
+    map.on('load', async function() {
         map.addSource('stations', {
             type: 'geojson',
             data: '/stations.geojson'
@@ -110,6 +115,10 @@ function initializeMap() {
             type: 'geojson',
             data: route
         });
+
+        const stationImage = await map.loadImage('/img/station.png');
+        console.log(stationImage)
+        map.addImage('stationIcon', stationImage.data);
 
         map.addLayer({
             id: 'route',
@@ -127,11 +136,14 @@ function initializeMap() {
 
         map.addLayer({
             id: 'stations-layer',
-            type: 'circle',
+            type: 'symbol',
             source: 'stations',
+            layout: {
+                'icon-image': 'stationIcon',
+                'icon-size': 0.1,
+            },
             paint: {
-                'circle-radius': 10,
-                'circle-color': '#B42222'
+                    
             }
         });
 
@@ -199,6 +211,10 @@ function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI)
     let nearestPoint = route[0];
     let minDistance = calculateDistance(startPoint, nearestPoint);
 
+    const el = marker.getElement();
+    const originalImg = el.style.backgroundImage;
+    el.style.backgroundImage = 'url(./img/train2.png)';
+
     for (let i = 1; i < route.length; i++) {
         const dist = calculateDistance(startPoint, route[i]);
         if (dist < minDistance) {
@@ -244,6 +260,7 @@ function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI)
             }
 
             if (calculateDistance(marker.getLngLat(), destinationStation) < step) {
+                el.style.backgroundImage = originalImg;
                 marker.setLngLat(destinationStation);
                 moveToFinalDestination(marker, destinationPOI);
             } else {

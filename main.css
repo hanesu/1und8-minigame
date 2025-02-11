@@ -27,3 +27,12 @@ h1 {
     padding-left: 2rem;
     padding-top: 1rem;
 }
+
+
+.personMarker {
+    display: block;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+}

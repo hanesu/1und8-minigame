@@ -8,7 +8,7 @@
           "coordinates": [8.778320272371287, 53.013825231435376]
         },
         "properties": {
-          "name": "Person 1",
+          "name": "Person1",
           "destination": "Friedhof Huchting",
           "destination-station": "Dovemoorstraße",
           "info": "Person 1 möchte zum Friedhof Huchting. Sie steigt an der Haltestelle Dovemoorstraße aus."
@@ -21,7 +21,7 @@
           "coordinates": [8.727488508968516, 53.02883996016038]
         },
         "properties": {
-          "name": "Person 2",
+          "name": "Person2",
           "destination": "Rathaus Stuhr",
           "destination-station": "Bf Stuhr",
           "info": "Person 2 möchte zum Rathaus Stuhr. Sie steigt an der Haltestelle Bf Stuhr aus."
