@@ -10,6 +10,7 @@ let personMarkerSelected = false;
 let stationsGeoJSON = null;
 let POIsGeoJSON = null;
 let personsGeoJSON = null;
+let selectedPerson = null;
 
 Promise.all([
     fetch('/stations.geojson').then(response => response.json()),
@@ -38,7 +39,7 @@ function initializeMap() {
             }
         ]
     };
-    
+    // generate POI markers from POIs.geojson
     const POImarkers = [];
     POIsGeoJSON.features.forEach(POI => {
         const POIpopup = new maptilersdk.Popup().setText(POI.properties.name);
@@ -68,12 +69,15 @@ function initializeMap() {
                 };
                 const nearestStationToPOI = turf.nearestPoint(POIpoint, stationsGeoJSON);
                 const stationDestination = nearestStationToPOI.geometry.coordinates;
-                
-                moveMarkerToNearestStation(selectedPersonMarker, stationsGeoJSON, stationDestination, POIdestination);
+                if(selectedPerson.properties.destination === POI.properties.name) {
+                    moveMarkerToNearestStation(selectedPersonMarker, stationsGeoJSON, stationDestination, POIdestination);
+                } else {
+                    console.log('you picked the wrong station fool');
+                }
             }
         });
     });
-
+    // generate person markers from persons.geojson
     personsGeoJSON.features.forEach(person => {
         const personMarker = new maptilersdk.Marker({
             color: '#008000',
@@ -87,13 +91,15 @@ function initializeMap() {
         personMarker.getElement().addEventListener('click', () => {
             personMarkerSelected = true;
             selectedPersonMarker = personMarker;
+            selectedPerson = person;
+            document.getElementById('person-title').innerHTML = person.properties.name
+            document.getElementById('person-info').innerHTML = person.properties.info
             console.log('Person marker clicked', personMarker);
             
         });
     });
 
-    
-
+    // initialize map itself and add layers
     map.on('load', () => {
         map.addSource('stations', {
             type: 'geojson',
@@ -134,6 +140,15 @@ function initializeMap() {
     });
 }
 
+/**
+ * Moves marker to the nearest station.
+ *
+ * @param   marker  the marker to be moved.
+ * @param   stationsGeoJSON  the GeoJSON object containing the stations.
+ * @param   destinationStation  the destination station (coordinate pair).
+ * @param   destinationPOI  the destination POI (coordinate pair).
+ * @callback moveMarkerAlongRoute called after the marker has reached the nearest station.
+ */
 function moveMarkerToNearestStation(marker, stationsGeoJSON, destinationStation, destinationPOI) {
     const startPoint = {
         type: 'Feature',
@@ -167,10 +182,18 @@ function moveMarkerToNearestStation(marker, stationsGeoJSON, destinationStation,
             moveMarkerAlongRoute(marker, routeCoordinates, destinationStation, destinationPOI);
         }
     }
-    console.log(endPoint);
     requestAnimationFrame(animate);
 }
 
+/**
+ * Moves marker along route line.
+ *
+ * @param   marker  the marker to be moved.
+ * @param   route  routeCoordinates map.
+ * @param   destinationStation  the destination station (coordinate pair).
+ * @param   destinationPOI  the destination POI (coordinate pair).
+ * @callback moveToFinalDestination called after the marker has reached the last station.
+ */
 function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI) {
     const startPoint = marker.getLngLat();
     let nearestPoint = route[0];
@@ -200,14 +223,12 @@ function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI)
             const nextIndex = currentIndex + direction;
             const nextPos = route[nextIndex];
 
-            // console.log('Current:', currentPos, ' Next:', nextPos, ' CurrentIndex:', currentIndex);
-
             if (!nextPos) {
                 marker.setLngLat(destinationStation);
                 return;
             }
 
-            const step = 0.00005; // Adjust step size for smoothness
+            const step = 0.0001; // Adjust step size for smoothness
             const dx = nextPos[0] - currentPos.lng;
             const dy = nextPos[1] - currentPos.lat;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -236,6 +257,12 @@ function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI)
     animate();
 }
 
+/**
+ * Moves marker to actual POI that is the destination
+ *
+ * @param   marker  the marker to be moved.
+ * @param   destination  destinationPOI.
+ */
 function moveToFinalDestination(marker, destination) {
     const start = marker.getLngLat();
     const startLngLat = [start.lng, start.lat];
@@ -253,9 +280,13 @@ function moveToFinalDestination(marker, destination) {
 
         if (t < 1) {
             requestAnimationFrame(animate);
+        } else {
+            if (calculateDistance(marker.getLngLat(), destination) < 0.0001) {
+                console.log('Destination reached');
+                marker.remove();
+            }
         }
     }
-
     requestAnimationFrame(animate);
 }
 

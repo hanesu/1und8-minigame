@@ -1,6 +1,9 @@
-root {
+:root {
     font-size: 16px;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
+}
+h1 {
+    margin: none;
 }
 .container {
     display: flex;
@@ -14,7 +17,13 @@ root {
     height: 50rem;
     position: relative !important;
 }
+#description-wrapper {
+    width: 100rem;
+}
 .description {
     margin-top: 1rem;
     background-color: beige;
+    height: 10rem;
+    padding-left: 2rem;
+    padding-top: 1rem;
 }

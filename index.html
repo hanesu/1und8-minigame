@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v3.0.1/maptiler-sdk.umd.min.js"></script>
   <link href="https://cdn.maptiler.com/maptiler-sdk-js/v3.0.1/maptiler-sdk.css" rel="stylesheet" />
   <link rel="stylesheet" href="/main.css">
@@ -17,10 +21,8 @@
     <div id="map"></div>
     <div id="description-wrapper">
       <div class="description">
-        <h1>Display a map</h1>
-        <p>
-          This example shows how to display a map using the MapTiler SDK.
-        </p>
+        <h1 id="person-title"></h1>
+        <p id="person-info"></p>
       </div>
     </div>
   </div>
