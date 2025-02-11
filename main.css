@@ -1,0 +1,20 @@
+root {
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+}
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+}
+#map {
+    width: 100rem !important;
+    height: 50rem;
+    position: relative !important;
+}
+.description {
+    margin-top: 1rem;
+    background-color: beige;
+}

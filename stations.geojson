@@ -1,0 +1,105 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.789672677709683, 53.002096375090225]
+        },
+        "properties": {
+          "name": "Bf Erichshof"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.786343992046682, 53.00502511918821]
+        },
+        "properties": {
+          "name": "Studtriede"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.785025308981856, 53.00845974436069]
+        },
+        "properties": {
+          "name": "Bassumer"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.782767603929921, 53.01428183385314]
+        },
+        "properties": {
+          "name": "Brinkum Bahnhofstraße"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.768807320860198, 53.01938559330482]
+        },
+        "properties": {
+          "name": "Stuhrbaum" 
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.747607592348695, 53.026581635632986]
+        },
+        "properties": {
+          "name": "Bf Stuhr"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.738753072349676, 53.02940126579498]
+        },
+        "properties": {
+          "name": "Beethovenstraße"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.729351092739437, 53.032212218810244]
+        },
+        "properties": {
+          "name": "Hespenstraße"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.72595590543374, 53.0350401060421]
+        },
+        "properties": {
+          "name": "Bf Moordeich"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.725587814811306, 53.03861305149076]
+        },
+        "properties": {
+          "name": "Dovemoorstraße"
+        }
+      }
+    ]
+  }

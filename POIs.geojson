@@ -1,0 +1,25 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.729111805193584, 53.03826596766262]
+        },
+        "properties": {
+          "name": "Friedhof Huchting"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.751063349933256, 53.02689850158786]
+        },
+        "properties": {
+          "name": "Rathaus Stuhr"
+        }
+      }
+    ]
+}

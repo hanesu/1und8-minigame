@@ -1,0 +1,29 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.778320272371287, 53.013825231435376]
+        },
+        "properties": {
+          "name": "Person 1",
+          "destination": "Friedhof Huchting",
+          "destination-station": "Dovemoorstraße"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.727488508968516, 53.02883996016038]
+        },
+        "properties": {
+          "name": "Person 2",
+          "destination": "Rathaus Stuhr",
+          "destination-station": "Bf Stuhr"
+        }
+      }
+    ]
+}
