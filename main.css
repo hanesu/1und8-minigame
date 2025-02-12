@@ -34,21 +34,27 @@ h1 {
     align-items: center;
     flex-direction: row;
 }
+.person-icons.not-allowed .person-icon {
+    cursor: not-allowed !important;
+}
 .person-icon {
     display: block;
     border-radius: 50%;
     padding: 0;
     width: 4rem;
 }
-.person-icon-selected {
+.person-icon:hover {
+    cursor: pointer;
+}
+.person-icon-active {
     box-shadow:inset 0px 10px 10px 1px rgb(255, 225, 0);
     scale: 1.1;
 }
 .person-icon-done {
     opacity: 0.5;
 }
-.person-icon:hover {
-    cursor: pointer;
+.person-icon-done:hover {
+    cursor: not-allowed;
 }
 
 .personMarker {

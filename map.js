@@ -20,12 +20,13 @@ let personMarkers = {};
 Promise.all([
     fetch('/geojson/stations.geojson').then(response => response.json()),
     fetch('/geojson/POIs.geojson').then(response => response.json()),
-    fetch('/geojson/persons.geojson').then(response => response.json())
-]).then(([stationsData, POIsData, personsData]) => {
+    fetch('/geojson/persons.geojson').then(response => response.json()),
+    fetch('/geojson/route8.geojson').then(response => response.json())
+]).then(([stationsData, POIsData, personsData, route8Data]) => {
     stationsGeoJSON = stationsData;
     POIsGeoJSON = POIsData;
     personsGeoJSON = personsData;
-
+    // routeCoordinates = route8Data.features[0].geometry.coordinates;
     routeCoordinates = stationsData.features.map(feature => feature.geometry.coordinates);
     POIcoordinates = POIsData.features.map(feature => feature.geometry.coordinates);
     initializeMap();
@@ -76,6 +77,7 @@ function initializeMap() {
                 const stationDestination = nearestStationToPOI.geometry.coordinates;
                 if(selectedPerson.properties.destination === POI.properties.name) {
                     canSelectPerson = false;
+                    updatePersonIconsState();
                     moveMarkerToNearestStation(selectedPersonMarker, stationsGeoJSON, stationDestination, POIdestination);
                 } else {
                     console.log('you picked the wrong station fool');
@@ -304,9 +306,10 @@ function moveToFinalDestination(marker, destination) {
                 console.log('Destination reached');
                 const personName = selectedPerson.properties.name;
                 const iconEl = document.getElementById(personName);
-                iconEl.classList.remove('person-icon-selected');
+                iconEl.classList.remove('person-icon-active');
                 iconEl.classList.add('person-icon-done')
                 canSelectPerson = true;
+                updatePersonIconsState(); 
                 marker.remove();
             }
         }
@@ -350,10 +353,23 @@ function selectPerson(person) {
     selectedPersonMarker = personMarkers[person.properties.name];
 
     personsGeoJSON.features.forEach(function(person) {
-        document.getElementById(person.properties.name).classList.remove('person-icon-selected');
+        document.getElementById(person.properties.name).classList.remove('person-icon-active');
     });
-    // Highlight selected person icon and fill title and description
-    document.getElementById(person.properties.name).classList.add('person-icon-selected');
+
+    // Highlight selected person icon and fill title and description only if person still available
+    if (document.getElementById(person.properties.name).classList.contains('person-icon-done')) {
+        return;
+    }
+    document.getElementById(person.properties.name).classList.add('person-icon-active');
     document.getElementById('person-title').innerHTML = person.properties.name;
     document.getElementById('person-info').innerHTML = person.properties.info;
+}
+
+function updatePersonIconsState() {
+    const container = document.querySelector('.person-icons');
+    if (!canSelectPerson) {
+        container.classList.add('not-allowed');
+    } else {
+        container.classList.remove('not-allowed');
+    }
 }
