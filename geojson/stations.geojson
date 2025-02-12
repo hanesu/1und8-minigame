@@ -5,6 +5,36 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
+          "coordinates": [8.827590574221093, 52.99481587851374]
+        },
+        "properties": {
+          "name": "Hagener Straße"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.816503572799816, 52.9944576383352]
+        },
+        "properties": {
+          "name": "Bf Leeste"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.800123678098426, 52.998369223317454]
+        },
+        "properties": {
+          "name": "Erichshof Ost"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
           "coordinates": [8.789672677709683, 53.002096375090225]
         },
         "properties": {

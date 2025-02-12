@@ -3,7 +3,9 @@ const map = new maptilersdk.Map({
 container: 'map', // container's id or the HTML element to render the map
 style: maptilersdk.MapStyle.STREETS,
 center: [8.768807320860198, 53.01938559330482], // starting position [lng, lat]
-zoom: 13, // starting zoom
+zoom: 13, // starting zoom  
+minZoom: 12,
+maxZoom: 15
 });
 
 let personMarkerSelected = false;
@@ -11,6 +13,7 @@ let stationsGeoJSON = null;
 let POIsGeoJSON = null;
 let personsGeoJSON = null;
 let selectedPerson = null;
+let canSelectPerson = true;
 
 Promise.all([
     fetch('/geojson/stations.geojson').then(response => response.json()),
@@ -24,6 +27,7 @@ Promise.all([
     routeCoordinates = stationsData.features.map(feature => feature.geometry.coordinates);
     POIcoordinates = POIsData.features.map(feature => feature.geometry.coordinates);
     initializeMap();
+    generatePersonIcons();
 });
 
 function initializeMap() {
@@ -70,6 +74,7 @@ function initializeMap() {
                 const nearestStationToPOI = turf.nearestPoint(POIpoint, stationsGeoJSON);
                 const stationDestination = nearestStationToPOI.geometry.coordinates;
                 if(selectedPerson.properties.destination === POI.properties.name) {
+                    canSelectPerson = false;
                     moveMarkerToNearestStation(selectedPersonMarker, stationsGeoJSON, stationDestination, POIdestination);
                 } else {
                     console.log('you picked the wrong station fool');
@@ -95,9 +100,18 @@ function initializeMap() {
             .addTo(map);
             
         personMarker.getElement().addEventListener('click', () => {
+            if (!canSelectPerson) {
+                return;
+            }
             personMarkerSelected = true;
             selectedPersonMarker = personMarker;
             selectedPerson = person;
+
+            personsGeoJSON.features.forEach(function(person) {
+                document.getElementById(person.properties.name).classList.remove('person-icon-selected');
+            });
+            // Highlight selected person icon and fill title and description
+            document.getElementById(person.properties.name).classList.add('person-icon-selected');
             document.getElementById('person-title').innerHTML = person.properties.name;
             document.getElementById('person-info').innerHTML = person.properties.info;
             console.log('Person marker clicked', personMarker);
@@ -108,7 +122,7 @@ function initializeMap() {
     map.on('load', async function() {
         map.addSource('stations', {
             type: 'geojson',
-            data: '/stations.geojson'
+            data: '/geojson/stations.geojson'
         });
 
         map.addSource('route', {
@@ -140,7 +154,7 @@ function initializeMap() {
             source: 'stations',
             layout: {
                 'icon-image': 'stationIcon',
-                'icon-size': 0.1,
+                'icon-size': 0.075,
             },
             paint: {
                     
@@ -300,6 +314,11 @@ function moveToFinalDestination(marker, destination) {
         } else {
             if (calculateDistance(marker.getLngLat(), destination) < 0.0001) {
                 console.log('Destination reached');
+                const personName = selectedPerson.properties.name;
+                const iconEl = document.getElementById(personName);
+                iconEl.classList.remove('person-icon-selected');
+                iconEl.classList.add('person-icon-done')
+                canSelectPerson = true;
                 marker.remove();
             }
         }
@@ -311,4 +330,17 @@ function calculateDistance(point1, point2) {
     const dx = point1.lng - point2[0];
     const dy = point1.lat - point2[1];
     return Math.sqrt(dx * dx + dy * dy);
+}
+
+function generatePersonIcons() {
+    const personIconsContainer = document.querySelector('.person-icons');
+    personsGeoJSON.features.forEach(person => {
+        const img = document.createElement('img');
+        img.src = `/img/${person.properties.name}.png`;
+        img.setAttribute('data-person-name', person.properties.name);
+        img.alt = person.properties.name;
+        img.className = 'person-icon';
+        img.id = person.properties.name;
+        personIconsContainer.appendChild(img);
+    });
 }

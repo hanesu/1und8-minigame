@@ -20,6 +20,36 @@
         "properties": {
           "name": "Rathaus Stuhr"
         }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.797241466903529, 52.99732949706448]
+        },
+        "properties": {
+          "name": "Ortsfeuerwehr Erichshof"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.779791663902396, 53.00507142422645]
+        },
+        "properties": {
+          "name": "Jugendtreff Haus am Wall"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.818663148468213, 52.992340621645305]
+        },
+        "properties": {
+          "name": "KGS-Leeste"
+        }
       }
     ]
 }

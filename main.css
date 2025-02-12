@@ -19,6 +19,7 @@ h1 {
 }
 #description-wrapper {
     width: 100rem;
+    margin-top: 1rem;
 }
 .description {
     margin-top: 1rem;
@@ -27,7 +28,24 @@ h1 {
     padding-left: 2rem;
     padding-top: 1rem;
 }
-
+.person-icons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+}
+.person-icon {
+    display: block;
+    border-radius: 50%;
+    padding: 0;
+    width: 4rem;
+}
+.person-icon-selected {
+    box-shadow:inset 0px 0px 0px 100px rgb(255, 225, 0);
+}
+.person-icon-done {
+    opacity: 0.5;
+}
 
 .personMarker {
     display: block;

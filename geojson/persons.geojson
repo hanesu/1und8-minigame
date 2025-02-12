@@ -8,10 +8,9 @@
           "coordinates": [8.778320272371287, 53.013825231435376]
         },
         "properties": {
-          "name": "Person1",
+          "name": "Max",
           "destination": "Friedhof Huchting",
-          "destination-station": "Dovemoorstraße",
-          "info": "Person 1 möchte zum Friedhof Huchting. Sie steigt an der Haltestelle Dovemoorstraße aus."
+          "info": "Max möchte zum Friedhof Huchting. Er steigt an der Haltestelle Dovemoorstraße aus."
         }
       },
       {
@@ -21,10 +20,33 @@
           "coordinates": [8.727488508968516, 53.02883996016038]
         },
         "properties": {
-          "name": "Person2",
+          "name": "Elise",
           "destination": "Rathaus Stuhr",
-          "destination-station": "Bf Stuhr",
-          "info": "Person 2 möchte zum Rathaus Stuhr. Sie steigt an der Haltestelle Bf Stuhr aus."
+          "info": "Elise möchte zum Rathaus Stuhr. Sie steigt an der Haltestelle Bf Stuhr aus."
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.815704470020695, 52.997254041837024]
+        },
+        "properties": {
+          "name": "Jim",
+          "destination": "Jugendtreff Haus am Wall",
+          "info": "Jim möchte zum Jugendtreff Haus am Wall."
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.794658027162269, 53.00953015186863]
+        },
+        "properties": {
+          "name": "Anna",
+          "destination": "KGS-Leeste",
+          "info": "Anna arbeitet als Köchin am KGS-Leeste."
         }
       }
     ]
