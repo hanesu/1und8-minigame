@@ -41,10 +41,14 @@ h1 {
     width: 4rem;
 }
 .person-icon-selected {
-    box-shadow:inset 0px 0px 0px 100px rgb(255, 225, 0);
+    box-shadow:inset 0px 10px 10px 1px rgb(255, 225, 0);
+    scale: 1.1;
 }
 .person-icon-done {
     opacity: 0.5;
+}
+.person-icon:hover {
+    cursor: pointer;
 }
 
 .personMarker {

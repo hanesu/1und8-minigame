@@ -50,6 +50,16 @@
         "properties": {
           "name": "KGS-Leeste"
         }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.785130033427333, 53.01140349888176]
+        },
+        "properties": {
+          "name": "Grundschule Brinkum"
+        }
       }
     ]
 }

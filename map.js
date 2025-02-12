@@ -5,7 +5,7 @@ style: maptilersdk.MapStyle.STREETS,
 center: [8.768807320860198, 53.01938559330482], // starting position [lng, lat]
 zoom: 13, // starting zoom  
 minZoom: 12,
-maxZoom: 15
+maxZoom: 15,
 });
 
 let personMarkerSelected = false;
@@ -14,6 +14,8 @@ let POIsGeoJSON = null;
 let personsGeoJSON = null;
 let selectedPerson = null;
 let canSelectPerson = true;
+// personMarkers map to be used in selectPerson function
+let personMarkers = {};
 
 Promise.all([
     fetch('/geojson/stations.geojson').then(response => response.json()),
@@ -30,6 +32,8 @@ Promise.all([
     generatePersonIcons();
 });
 
+
+
 function initializeMap() {
     var route = {
         type: 'FeatureCollection',
@@ -43,8 +47,7 @@ function initializeMap() {
             }
         ]
     };
-    // generate POI markers from POIs.geojson
-    const POImarkers = [];
+
     POIsGeoJSON.features.forEach(POI => {
         const POIpopup = new maptilersdk.Popup().setText(POI.properties.name);
         const POImarker = new maptilersdk.Marker({
@@ -55,8 +58,6 @@ function initializeMap() {
             .setLngLat(POI.geometry.coordinates)
             .setPopup(POIpopup)
             .addTo(map);
-
-        POImarkers[POI.properties.name] = POImarker;
         
         POImarker.getElement().addEventListener('click', () => {
             if (personMarkerSelected && selectedPersonMarker) {
@@ -87,7 +88,6 @@ function initializeMap() {
     personsGeoJSON.features.forEach(function(person) {
         var el = document.createElement('div');
         el.className = 'personMarker';
-        console.log(person.properties.name);
         el.style.backgroundImage = `url(./img/${person.properties.name}.png)`;
         el.style.width = '40px';
         el.style.height = '40px';
@@ -95,26 +95,15 @@ function initializeMap() {
         el.style.backgroundRepeat = 'no-repeat';
         
         const personMarker = new maptilersdk.Marker({element: el})
-            .setLngLat(person.geometry.coordinates)  // Changed from marker to person
-            .setPopup(new maptilersdk.Popup().setText(person.properties.name))
+            .setLngLat(person.geometry.coordinates)
             .addTo(map);
+
+        // Add person marker to personMarkers map to be used in selectPerson function
+        personMarkers[person.properties.name] = personMarker;
             
         personMarker.getElement().addEventListener('click', () => {
-            if (!canSelectPerson) {
-                return;
-            }
-            personMarkerSelected = true;
+            selectPerson(person);
             selectedPersonMarker = personMarker;
-            selectedPerson = person;
-
-            personsGeoJSON.features.forEach(function(person) {
-                document.getElementById(person.properties.name).classList.remove('person-icon-selected');
-            });
-            // Highlight selected person icon and fill title and description
-            document.getElementById(person.properties.name).classList.add('person-icon-selected');
-            document.getElementById('person-title').innerHTML = person.properties.name;
-            document.getElementById('person-info').innerHTML = person.properties.info;
-            console.log('Person marker clicked', personMarker);
         });
     });
 
@@ -131,7 +120,6 @@ function initializeMap() {
         });
 
         const stationImage = await map.loadImage('/img/station.png');
-        console.log(stationImage)
         map.addImage('stationIcon', stationImage.data);
 
         map.addLayer({
@@ -143,7 +131,7 @@ function initializeMap() {
                 'line-cap': 'round'
             },
             paint: {
-                'line-color': '#FF0000',
+                'line-color': '#92C01A',
                 'line-width': 4
             }
         });
@@ -245,7 +233,7 @@ function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI)
     );
     let direction = currentIndex < destinationIndex ? 1 : -1;
 
-    console.log('Direction:', direction, ' Destination:', destinationIndex);
+    // console.log('Direction:', direction, ' Destination:', destinationIndex);
 
     function animate() {
         if ((direction === 1 && currentIndex < destinationIndex) || (direction === -1 && currentIndex > destinationIndex)) {
@@ -343,4 +331,29 @@ function generatePersonIcons() {
         img.id = person.properties.name;
         personIconsContainer.appendChild(img);
     });
+
+    document.querySelectorAll('.person-icon').forEach( el => {
+        el.addEventListener('click', function() {
+            const personName = el.getAttribute('data-person-name');
+            const person = personsGeoJSON.features.find(person => person.properties.name === personName);
+            selectPerson(person);
+        });
+    });
+}
+
+function selectPerson(person) {
+    if (!canSelectPerson) {
+        return;
+    }
+    personMarkerSelected = true;
+    selectedPerson = person;
+    selectedPersonMarker = personMarkers[person.properties.name];
+
+    personsGeoJSON.features.forEach(function(person) {
+        document.getElementById(person.properties.name).classList.remove('person-icon-selected');
+    });
+    // Highlight selected person icon and fill title and description
+    document.getElementById(person.properties.name).classList.add('person-icon-selected');
+    document.getElementById('person-title').innerHTML = person.properties.name;
+    document.getElementById('person-info').innerHTML = person.properties.info;
 }

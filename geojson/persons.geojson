@@ -22,7 +22,7 @@
         "properties": {
           "name": "Elise",
           "destination": "Rathaus Stuhr",
-          "info": "Elise möchte zum Rathaus Stuhr. Sie steigt an der Haltestelle Bf Stuhr aus."
+          "info": "Elise arbeitet für die im Rathaus Stuhr."
         }
       },
       {
@@ -47,6 +47,18 @@
           "name": "Anna",
           "destination": "KGS-Leeste",
           "info": "Anna arbeitet als Köchin am KGS-Leeste."
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.78179798050083, 52.999716026400094]
+        },
+        "properties": {
+          "name": "Gisela",
+          "destination": "Grundschule Brinkum",
+          "info": "Oma Gisela möchte ihre Kinder von der Grundschule Brinkum abholen."
         }
       }
     ]
