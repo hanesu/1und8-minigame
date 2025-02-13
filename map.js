@@ -1,20 +1,32 @@
 maptilersdk.config.apiKey = '9X2VSCQEbqyH6TCJc0zM';
+
+/** @type {maptilersdk.Map} Main map instance */
 const map = new maptilersdk.Map({
-container: 'map', // container's id or the HTML element to render the map
-style: maptilersdk.MapStyle.STREETS,
-center: [8.768807320860198, 53.01938559330482], // starting position [lng, lat]
-zoom: 13, // starting zoom  
-minZoom: 12,
-maxZoom: 15,
+    container: 'map',
+    style: maptilersdk.MapStyle.STREETS,
+    center: [8.768807320860198, 53.01938559330482],
+    zoom: 13,
+    minZoom: 12,
+    maxZoom: 15,
 });
 
+// Image paths 
+const trainIconPath = './img/train2.png';
+const stationIconPath = './img/station.png';
+
+// State variables for person selection and movement
 let personMarkerSelected = false;
+let selectedPerson = null;
+let canSelectPerson = true;
+let selectedPersonMarker = null;
+
+// GeoJSON data containers
 let stationsGeoJSON = null;
 let POIsGeoJSON = null;
 let personsGeoJSON = null;
-let selectedPerson = null;
-let canSelectPerson = true;
-// personMarkers map to be used in selectPerson function
+let routeCoordinates = null;
+
+/** @type {Object.<string, maptilersdk.Marker>} Map of person names to their markers */
 let personMarkers = {};
 
 Promise.all([
@@ -49,6 +61,7 @@ function initializeMap() {
         ]
     };
 
+    // Generate POI markers from POIs.geojson
     POIsGeoJSON.features.forEach(POI => {
         const POIpopup = new maptilersdk.Popup().setText(POI.properties.name);
         const POImarker = new maptilersdk.Marker({
@@ -86,7 +99,7 @@ function initializeMap() {
         });
     });
 
-    // generate person markers from persons.geojson
+    // Generate person markers from persons.geojson
     personsGeoJSON.features.forEach(function(person) {
         var el = document.createElement('div');
         el.className = 'personMarker';
@@ -109,7 +122,7 @@ function initializeMap() {
         });
     });
 
-    // initialize map itself and add layers
+    // Initialize map itself and add layers
     map.on('load', async function() {
         map.addSource('stations', {
             type: 'geojson',
@@ -121,7 +134,7 @@ function initializeMap() {
             data: route
         });
 
-        const stationImage = await map.loadImage('/img/station.png');
+        const stationImage = await map.loadImage(stationIconPath);
         map.addImage('stationIcon', stationImage.data);
 
         map.addLayer({
@@ -179,13 +192,13 @@ function moveMarkerToNearestStation(marker, stationsGeoJSON, destinationStation,
 
     const start = marker.getLngLat();
     const startLngLat = [start.lng, start.lat];
-    const duration = 1500; // duration of the animation in milliseconds
+    const duration = 1500; // Duration of the animation in milliseconds
     const startTime = performance.now();
 
     
     function animate(time) {
         const elapsed = time - startTime;
-        const t = Math.min(elapsed / duration, 1); // normalize time to [0, 1]
+        const t = Math.min(elapsed / duration, 1);
 
         const lng = startLngLat[0] + (endPoint[0] - startLngLat[0]) * t;
         const lat = startLngLat[1] + (endPoint[1] - startLngLat[1]) * t;
@@ -208,7 +221,7 @@ function moveMarkerToNearestStation(marker, stationsGeoJSON, destinationStation,
  * @param   route  routeCoordinates map.
  * @param   destinationStation  the destination station (coordinate pair).
  * @param   destinationPOI  the destination POI (coordinate pair).
- * @callback moveToFinalDestination called after the marker has reached the last station.
+ * @callback moveToPOIDestination called after the marker has reached the last station.
  */
 function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI) {
     const startPoint = marker.getLngLat();
@@ -217,7 +230,7 @@ function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI)
 
     const el = marker.getElement();
     const originalImg = el.style.backgroundImage;
-    el.style.backgroundImage = 'url(./img/train2.png)';
+    el.style.backgroundImage = `url(${trainIconPath})`;
 
     for (let i = 1; i < route.length; i++) {
         const dist = calculateDistance(startPoint, route[i]);
@@ -248,7 +261,7 @@ function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI)
                 return;
             }
 
-            const step = 0.0001; // Adjust step size for smoothness
+            const step = 0.0001; // adjust step size for smoothness
             const dx = nextPos[0] - currentPos.lng;
             const dy = nextPos[1] - currentPos.lat;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -266,7 +279,7 @@ function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI)
             if (calculateDistance(marker.getLngLat(), destinationStation) < step) {
                 el.style.backgroundImage = originalImg;
                 marker.setLngLat(destinationStation);
-                moveToFinalDestination(marker, destinationPOI);
+                moveToPOIDestination(marker, destinationPOI);
             } else {
                 requestAnimationFrame(animate);
             }
@@ -284,7 +297,7 @@ function moveMarkerAlongRoute(marker, route, destinationStation, destinationPOI)
  * @param   marker  the marker to be moved.
  * @param   destination  destinationPOI.
  */
-function moveToFinalDestination(marker, destination) {
+function moveToPOIDestination(marker, destination) {
     const start = marker.getLngLat();
     const startLngLat = [start.lng, start.lat];
     const duration = 1500;
@@ -323,6 +336,11 @@ function calculateDistance(point1, point2) {
     return Math.sqrt(dx * dx + dy * dy);
 }
 
+/**
+ * Creates clickable icon for each person in persons.geojson
+ * 
+ * @callback selectPerson called after clicking on the icon.
+ */
 function generatePersonIcons() {
     const personIconsContainer = document.querySelector('.person-icons');
     personsGeoJSON.features.forEach(person => {
@@ -344,6 +362,11 @@ function generatePersonIcons() {
     });
 }
 
+/**
+ * Selects person icon and fills title and description.
+ *
+ * @param   person  the marker to be moved.
+ */
 function selectPerson(person) {
     if (!canSelectPerson) {
         return;
@@ -351,6 +374,11 @@ function selectPerson(person) {
     personMarkerSelected = true;
     selectedPerson = person;
     selectedPersonMarker = personMarkers[person.properties.name];
+
+    // remove class from all markers
+    const markers = document.querySelectorAll('.personMarker');
+    markers.forEach(marker => marker.classList.remove('marker-active'));
+    selectedPersonMarker.addClassName('marker-active');
 
     personsGeoJSON.features.forEach(function(person) {
         document.getElementById(person.properties.name).classList.remove('person-icon-active');
@@ -365,6 +393,11 @@ function selectPerson(person) {
     document.getElementById('person-info').innerHTML = person.properties.info;
 }
 
+/**
+ * Adds and removes 'not-allowed' class from person-icons container.
+ * Gets called when canSelectPerson changes
+ *
+ */
 function updatePersonIconsState() {
     const container = document.querySelector('.person-icons');
     if (!canSelectPerson) {

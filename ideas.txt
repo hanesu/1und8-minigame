@@ -1,0 +1,4 @@
+Anstatt Spieler eher spectator:
+Bahn fährt schon von alleine Strecke ab, hält bei Stationen wo eine Person einsteigen möchte.
+Person läuft automatisch zu Station, fährt mit Bahn, kommt an, fährt irgendwann wieder zurück mit Bahn.
+POIs und Stationen haben Infotext und Bild ähnlich wie Personen.
