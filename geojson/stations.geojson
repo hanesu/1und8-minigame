@@ -130,6 +130,36 @@
         "properties": {
           "name": "Dovemoorstraße"
         }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.728667008882447, 53.043550723558084]
+        },
+        "properties": {
+          "name": "Auf den Kahlken"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.734226311739585, 53.04730594892187]
+        },
+        "properties": {
+          "name": "Willakedamm"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.741295205403594, 53.048329141707526]
+        },
+        "properties": {
+          "name": "Roland-Center"
+        }
       }
     ]
   }

@@ -18,6 +18,28 @@
 </head>
 <body>
   <div class="container">
+    <div class="controls">
+      <button id="startSimulation" class="control-button">Start Simulation</button>
+      
+      <div class="sliders">
+          <div class="slider-container">
+              <label for="giselaDelay">Gisela Delay: <span id="giselaValue">0</span>s</label>
+              <input type="range" id="giselaDelay" min="0" max="30" value="0">
+          </div>
+          <div class="slider-container">
+              <label for="annaDelay">Anna Delay: <span id="annaValue">15</span>s</label>
+              <input type="range" id="annaDelay" min="0" max="30" value="15">
+          </div>
+          <div class="slider-container">
+              <label for="maxDelay">Max Delay: <span id="maxValue">2</span>s</label>
+              <input type="range" id="maxDelay" min="0" max="30" value="2">
+          </div>
+          <div class="slider-container">
+              <label for="eliseDelay">Elise Delay: <span id="eliseValue">10</span>s</label>
+              <input type="range" id="eliseDelay" min="0" max="30" value="10">
+          </div>
+      </div>
+  </div>
     <div id="map"></div>
     <div id="description-wrapper">
       <div class="person-icons">

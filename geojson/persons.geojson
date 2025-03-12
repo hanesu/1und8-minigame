@@ -10,6 +10,8 @@
         "properties": {
           "name": "Max",
           "destination": "Friedhof Huchting",
+          "destinationStation": "Dovemoorstraße",
+          "homeStation": "Brinkum Bahnhofstraße",
           "info": "Max möchte zum Friedhof Huchting. Er steigt an der Haltestelle Dovemoorstraße aus."
         }
       },
@@ -22,6 +24,8 @@
         "properties": {
           "name": "Elise",
           "destination": "Rathaus Stuhr",
+          "destinationStation": "Bf Stuhr",
+          "homeStation": "Hespenstraße",
           "info": "Elise arbeitet für die im Rathaus Stuhr."
         }
       },
@@ -34,6 +38,7 @@
         "properties": {
           "name": "Jim",
           "destination": "Jugendtreff Haus am Wall",
+          "destinationStation": "Bassumer",
           "info": "Jim möchte zum Jugendtreff Haus am Wall."
         }
       },
@@ -46,6 +51,8 @@
         "properties": {
           "name": "Anna",
           "destination": "KGS-Leeste",
+          "destinationStation": "Bf Leeste",
+          "homeStation": "Bassumer",
           "info": "Anna arbeitet als Köchin am KGS-Leeste."
         }
       },
@@ -58,6 +65,8 @@
         "properties": {
           "name": "Gisela",
           "destination": "Grundschule Brinkum",
+          "destinationStation": "Brinkum Bahnhofstraße",
+          "homeStation": "Bf Erichshof",
           "info": "Oma Gisela möchte ihre Kinder von der Grundschule Brinkum abholen."
         }
       }
