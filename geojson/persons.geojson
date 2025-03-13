@@ -33,12 +33,13 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.815704470020695, 52.997254041837024]
+          "coordinates": [8.74032759702164, 53.03148012380614]
         },
         "properties": {
           "name": "Jim",
           "destination": "Jugendtreff Haus am Wall",
           "destinationStation": "Bassumer",
+          "homeStation": "Beethovenstraße",
           "info": "Jim möchte zum Jugendtreff Haus am Wall."
         }
       },

@@ -57,7 +57,7 @@ h1 {
     cursor: not-allowed;
 }
 
-.personMarker {
+.person-marker {
     display: block;
     border: none;
     border-radius: 50%;
@@ -67,6 +67,20 @@ h1 {
     height: 40px;
     background-size: contain;
     background-repeat: no-repeat;
+}
+
+.train-marker {
+    background-image: url("./img/train2.png");
+    display: block;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    transform: scaleX(-1);
 }
 
 .destination-popup {

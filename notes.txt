@@ -1,13 +1,14 @@
 ✓ Icons für alle aktuellen Passenger über TrainMarker rendern
-Unendliche Loop
+✓ Unendliche Loop?
 ✓ Start/Stopp Knopf
 ✓ Parameter Slider (Startzeiten etc.) 
 ✓ Sprechblasen Ankunft
-Sprechblasen Warten
+Sprechblasen Warten?
 ✓ isStop basierend auf personMarker Position und destinationStations in passengers
 
-Personen wollen von POI wieder zurück nachhause
+✓ Personen wollen von POI wieder zurück nachhause
 easeInOut bei Stationen
 (Personen gehen echten Weg zu POI statt gerader Linie)
 
 ! Return timer individuell
+! POI Bilder/Beschreibung

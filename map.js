@@ -55,9 +55,10 @@ function initializeMap() {
         ]
     };
 
+    var train1MarkerEl = document.createElement('div');
+    train1MarkerEl.className = 'train-marker';
     train1Marker = new maptilersdk.Marker({
-        color: '#FF0000',
-        size: 40,
+        element: train1MarkerEl,
         anchor: 'center'
     })
         .setLngLat(stationCoordinates[0])
@@ -77,12 +78,15 @@ function initializeMap() {
             .setPopup(POIpopup)
             .addTo(map);
 
+        POImarker.getElement().addEventListener('click', () => {
+            selectPOI(POI);
+        });
     });
 
     // generate person markers from persons.geojson
     personsGeoJSON.features.forEach(function(person) {
         var el = document.createElement('div');
-        el.className = 'personMarker';
+        el.className = 'person-marker';
         el.style.backgroundImage = `url(./img/${person.properties.name}.png)`;
         
         const personMarker = new maptilersdk.Marker({element: el})
@@ -237,6 +241,13 @@ function movePersonToHome(marker, coords) {
     const duration = 1500;
     const startTime = performance.now();
 
+    const popup = new maptilersdk.Popup({
+        className: 'destination-popup',
+        closeButton: false,
+        closeOnClick: true,
+        offset: 25
+    }).setHTML('&#128522;');
+
     function animate(time) {
         const elapsed = time - startTime;
         const t = Math.min(elapsed / duration, 1);
@@ -250,8 +261,14 @@ function movePersonToHome(marker, coords) {
             requestAnimationFrame(animate);
         } else {
             console.log('Person returned home');
+            marker.setPopup(popup);
+            marker.togglePopup();
             marker.isReturning = false;
             marker.isAvailable = false;
+            
+            setTimeout(() => {
+                popup.remove();
+            }, 1500); // Show popup for x seconds
         }
     }
     requestAnimationFrame(animate);
@@ -280,9 +297,8 @@ function isNearLocation(position1, position2, tolerance = 0.0001) {
  * @param   marker  the marker to be moved.
  * @param   route  routeCoordinates map.
  * @param   direction the direction of the train (1 or -1).
- * @param   stops the stops along the route (list of coordinate pairs).
  */
-function moveTrainMarker(marker, route, direction, stops) {
+function moveTrainMarker(marker, route, direction) {
     let startPoint = direction === 1 ? route[0] : route[route.length - 1];
     let endPoint = direction === 1 ? route[route.length - 1] : route[0];
     let currentIndex = route.indexOf(startPoint);
@@ -303,7 +319,7 @@ function moveTrainMarker(marker, route, direction, stops) {
         marker.passengers.forEach(passenger => {
             const icon = document.createElement('img');
             icon.src = `./img/${passenger.name}.png`;
-            icon.className = 'personMarker';
+            icon.className = 'person-marker';
             passengerContainer.appendChild(icon);
         });
     }
@@ -467,8 +483,13 @@ function moveTrainMarker(marker, route, direction, stops) {
         } else {
             // Reached end point, flip direction and restart
             direction *= -1;
-            currentIndex = destinationIndex;
-            destinationIndex = route.indexOf(startPoint);
+
+            const temp = startPoint;
+            startPoint = endPoint;
+            endPoint = temp;
+            
+            currentIndex = direction === 1 ? route.indexOf(startPoint) : route.length - 1;
+            destinationIndex = direction === 1 ? route.length - 1 : 0;
             requestAnimationFrame(animate);
         }
     }
@@ -519,8 +540,13 @@ function selectPerson(person) {
         return;
     }
     document.getElementById(person.properties.name).classList.add('person-icon-active');
-    document.getElementById('person-title').innerHTML = person.properties.name;
-    document.getElementById('person-info').innerHTML = person.properties.info;
+    document.getElementById('desc-title').innerHTML = person.properties.name;
+    document.getElementById('desc-info').innerHTML = person.properties.info;
+}
+
+function selectPOI(poi) {
+    document.getElementById('desc-title').innerHTML = poi.properties.name;
+    document.getElementById('desc-info').innerHTML = poi.properties.info;
 }
 
 function updatePersonIconsState() {
@@ -547,6 +573,7 @@ function startSimulation() {
     const annaDelay = document.getElementById('annaDelay').value * 1000;
     const maxDelay = document.getElementById('maxDelay').value * 1000;
     const eliseDelay = document.getElementById('eliseDelay').value * 1000;
+    const jimDelay = document.getElementById('jimDelay').value * 1000;
 
     // Schedule person movements with delays
     simulationTimeouts.push(setTimeout(() => {
@@ -554,16 +581,20 @@ function startSimulation() {
     }, giselaDelay));
 
     simulationTimeouts.push(setTimeout(() => {
-        movePersonToStation(personMarkers['Anna'], "Studtriede");
+        movePersonToStation(personMarkers['Anna'], personMarkers['Anna'].homeStation);
     }, annaDelay));
 
     simulationTimeouts.push(setTimeout(() => {
-        movePersonToStation(personMarkers['Max'], "Brinkum Bahnhofstraße");
+        movePersonToStation(personMarkers['Max'], personMarkers['Max'].homeStation);
     }, maxDelay));
 
     simulationTimeouts.push(setTimeout(() => {
-        movePersonToStation(personMarkers['Elise'], "Hespenstraße");
+        movePersonToStation(personMarkers['Elise'], personMarkers['Elise'].homeStation);
     }, eliseDelay));
+
+    simulationTimeouts.push(setTimeout(() => {
+        movePersonToStation(personMarkers['Jim'], personMarkers['Jim'].homeStation);
+    }, jimDelay))
 }
 
 // Add reset function
@@ -593,7 +624,7 @@ function resetSimulation() {
 
 // Add event listeners for sliders
 function initializeControls() {
-    ['gisela', 'anna', 'max', 'elise'].forEach(name => {
+    ['gisela', 'anna', 'max', 'elise', 'jim'].forEach(name => {
         const slider = document.getElementById(`${name}Delay`);
         const valueDisplay = document.getElementById(`${name}Value`);
         slider.addEventListener('input', () => {

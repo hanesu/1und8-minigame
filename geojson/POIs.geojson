@@ -8,7 +8,8 @@
           "coordinates": [8.729111805193584, 53.03826596766262]
         },
         "properties": {
-          "name": "Friedhof Huchting"
+          "name": "Friedhof Huchting",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       },
       {
@@ -18,7 +19,8 @@
           "coordinates": [8.751063349933256, 53.02689850158786]
         },
         "properties": {
-          "name": "Rathaus Stuhr"
+          "name": "Rathaus Stuhr",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       },
       {
@@ -28,7 +30,8 @@
           "coordinates": [8.797241466903529, 52.99732949706448]
         },
         "properties": {
-          "name": "Ortsfeuerwehr Erichshof"
+          "name": "Ortsfeuerwehr Erichshof",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       },
       {
@@ -38,7 +41,8 @@
           "coordinates": [8.779791663902396, 53.00507142422645]
         },
         "properties": {
-          "name": "Jugendtreff Haus am Wall"
+          "name": "Jugendtreff Haus am Wall",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       },
       {
@@ -48,7 +52,8 @@
           "coordinates": [8.818663148468213, 52.992340621645305]
         },
         "properties": {
-          "name": "KGS-Leeste"
+          "name": "KGS-Leeste",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       },
       {
@@ -58,7 +63,8 @@
           "coordinates": [8.785130033427333, 53.01140349888176]
         },
         "properties": {
-          "name": "Grundschule Brinkum"
+          "name": "Grundschule Brinkum",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         }
       }
     ]
