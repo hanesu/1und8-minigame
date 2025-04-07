@@ -1,10 +1,19 @@
+
+/* Global Styles */
 :root {
     font-size: 16px;
     font-family: "Roboto", sans-serif;
+    --green: #31692d;
 }
+
 h1 {
     margin: none;
 }
+
+.hidden {
+    display: none !important;
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -12,43 +21,138 @@ h1 {
     flex-direction: column;
     height: 100vh;
 }
+
+#map-container {
+    position: relative;
+}
+
 #map {
     width: 100rem !important;
     height: 50rem;
     position: relative !important;
 }
-#description-wrapper {
-    width: 100rem;
-    margin-top: 1rem;
+
+#map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0);
+    pointer-events: none;
+    z-index: 1;
+    transition: background-color 0.5s ease;
 }
-.description {
-    margin-top: 1rem;
-    background-color: beige;
-    height: 10rem;
-    padding-left: 2rem;
-    padding-top: 1rem;
+
+#map-overlay.darkened {
+    background: rgba(0, 0, 0, 0.5);
 }
+
+
+#info-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+
+    width: 30rem;
+    max-height: 100%;
+    top: 1rem;
+    right: 4rem;
+    background-color: white;
+    opacity: 1;
+    z-index: 10;
+    position: absolute;
+    border-radius: 25px;
+
+    padding-left: 3rem;
+    padding-right: 3rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    #info-header {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 2rem;
+        color: var(--green);
+
+        .person-icon {
+            width: 5rem;
+            height: 5rem;
+        }
+
+        #info-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        p {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+    }
+    #info-text {
+        margin: 0;
+        flex-grow: 1;
+    }
+    
+    #info-button-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    button {
+        background-color: var(--green);
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: none;
+    }
+    
+}
+
+.person-marker-selected {
+    z-index: 2;
+    filter: brightness(100%);
+}
+
 .person-icons {
     display: flex;
     justify-content: space-around;
     align-items: center;
     flex-direction: row;
 }
+
 .person-icons.not-allowed .person-icon {
     cursor: not-allowed !important;
 }
+
 .person-icon {
     display: block;
     border-radius: 50%;
     padding: 0;
     width: 4rem;
 }
+
 .person-icon:hover {
     cursor: pointer;
 }
+
 .person-icon-active {
     box-shadow:inset 0px 10px 10px 1px rgb(255, 225, 0);
-    scale: 1.1;
 }
 .person-icon-done {
     opacity: 0.5;
@@ -63,10 +167,14 @@ h1 {
     border-radius: 50%;
     cursor: pointer;
     padding: 0;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     background-size: contain;
     background-repeat: no-repeat;
+}
+.person-marker:hover {
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .train-marker {
@@ -99,44 +207,31 @@ h1 {
 }
 
 
-.controls {
+#opt-in-overlay {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 10;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(236, 236, 236);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.control-button {
-    padding: 8px 16px;
-    margin: 5px;
-    background-color: #92C01A;
+.opt-in-content {
+    text-align: center;
+    padding: 2rem;
+    width: 50%;
+}
+
+#opt-in-button {
+    background-color: var(--green);
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 15px 25px;
+    font-size: 1rem;
     cursor: pointer;
-}
-
-.control-button:hover {
-    background-color: #7a9f15;
-}
-
-.control-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-.sliders {
-    margin-top: 10px;
-}
-
-.slider-container {
-    margin: 10px 0;
-}
-
-input[type="range"] {
-    width: 100%;
+    border-radius: 0px;
 }
