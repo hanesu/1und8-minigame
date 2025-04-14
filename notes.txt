@@ -9,12 +9,12 @@
 easeInOut bei Stationen
 (Personen gehen echten Weg zu POI statt gerader Linie)
 
-! Return timer individuell
-! POI Bilder/Beschreibung
+✓ Return timer individuell
 
 ✓ Opt-In Banner
 ✓ Personen Infobox
 ✓ Clickable Passengers
 
-Loop Personen Tagesablauf
+! Loop Personen Tagesablauf
+
 Eigene POI Infobox

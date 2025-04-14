@@ -144,7 +144,7 @@ function initializeMap() {
         });
     });
 
-    // initialize map itself and add layers
+    // Initialize map and add layers
     map.on('load', async function() {
         map.addSource('stations', {
             type: 'geojson',
@@ -223,12 +223,14 @@ function movePersonToStation(marker, stationName) {
 }
 
 function movePersonToPOI(marker, POIname) {
+    const person = personsGeoJSON.features.find(p => p.properties.name === marker.name);
     const POI = findPOIByName(POIname).geometry.coordinates;
 
     const start = marker.getLngLat();
     const startLngLat = [start.lng, start.lat];
     const duration = 1500;
     const startTime = performance.now();
+    const waitTime = person.properties.returnTimer || 3000; // Default wait time if not specified
 
     const popup = new maptilersdk.Popup({
         className: 'destination-popup',
@@ -254,16 +256,17 @@ function movePersonToPOI(marker, POIname) {
             marker.togglePopup();
             marker.waitingAtPOI = true;
 
+            // Return timer
             setTimeout(() => {
                 popup.remove();
-            }, 1500); // Show popup for x seconds
+            }, 1500); // Popup timer
             setTimeout(() => {
                 marker.waitingAtPOI = false;
                 marker.isReturning = true;
                 marker.isAvailable = true;
                 movePersonToStation(marker, marker.destinationStation);
                 marker.destinationStation = marker.homeStation;
-            }, 3000) // Wait for x seconds before returning to station
+            }, waitTime) // Wait for x seconds before returning to station
         }
     }
     requestAnimationFrame(animate);
@@ -301,7 +304,8 @@ function movePersonToHome(marker, coords) {
             
             setTimeout(() => {
                 popup.remove();
-            }, 1500); // Show popup for x seconds
+                
+            }, 1500);
         }
     }
     requestAnimationFrame(animate);
@@ -500,7 +504,7 @@ function moveTrainMarker(marker, route, direction) {
             const nextIndex = currentIndex + direction;
             const nextPos = route[nextIndex];
 
-            const step = 0.00005; // Adjust step size for animation train speed
+            const step = 0.00015; // Adjust step size for animation train speed
             const dx = nextPos[0] - currentPos.lng;
             const dy = nextPos[1] - currentPos.lat;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -545,6 +549,10 @@ function moveTrainMarker(marker, route, direction) {
             
             currentIndex = direction === 1 ? route.indexOf(startPoint) : route.length - 1;
             destinationIndex = direction === 1 ? route.length - 1 : 0;
+
+            if (direction === 1) {
+                document.dispatchEvent(trainaAtStartEvent);
+            }
             requestAnimationFrame(animate);
         }
     }
@@ -621,7 +629,6 @@ function updatePersonIconsState() {
 }
 
 function startSimulation() {
-
     // Clear any existing timeouts
     simulationTimeouts.forEach(timeout => clearTimeout(timeout));
     simulationTimeouts = [];
@@ -629,31 +636,12 @@ function startSimulation() {
     // Start train
     moveTrainMarker(train1Marker, routeCoordinates, 1);
 
-    // Get delays from sliders (convert to milliseconds)
-    const giselaDelay = 0;
-    const annaDelay = 15000;
-    const maxDelay = 2000;
-    const eliseDelay = 10000;
-    const jimDelay = 6000;
+    personsGeoJSON.features.forEach(person => {
+        const delay = person.properties.startTimer || 0; // Default delay if not specified
+        const personMarker = personMarkers[person.properties.name];
 
-    // Schedule person movements with delays
-    simulationTimeouts.push(setTimeout(() => {
-        movePersonToStation(personMarkers['Gisela'], personMarkers['Gisela'].homeStation);
-    }, giselaDelay));
-
-    simulationTimeouts.push(setTimeout(() => {
-        movePersonToStation(personMarkers['Anna'], personMarkers['Anna'].homeStation);
-    }, annaDelay));
-
-    simulationTimeouts.push(setTimeout(() => {
-        movePersonToStation(personMarkers['Max'], personMarkers['Max'].homeStation);
-    }, maxDelay));
-
-    simulationTimeouts.push(setTimeout(() => {
-        movePersonToStation(personMarkers['Elise'], personMarkers['Elise'].homeStation);
-    }, eliseDelay));
-
-    simulationTimeouts.push(setTimeout(() => {
-        movePersonToStation(personMarkers['Jim'], personMarkers['Jim'].homeStation);
-    }, jimDelay))
+        simulationTimeouts.push(setTimeout(() => {
+            movePersonToStation(personMarker, personMarker.homeStation);
+        }, delay));
+    })
 }
