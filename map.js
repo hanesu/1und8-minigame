@@ -7,6 +7,7 @@ let selectedPerson = null;
 let canSelectPerson = true;
 // personMarkers map to be used in selectPerson function
 let personMarkers = {};
+let peopleAtPOIs = {};
 
 let train1Marker = null;
 let simulationTimeouts = [];
@@ -15,11 +16,15 @@ let train1Interval = null;
 
 document.getElementById('opt-in-button').addEventListener('click', () => {
     // Hide opt-in overlay
-    document.getElementById('opt-in-overlay').classList.add('hidden');
+    // document.getElementById('opt-in-overlay').classList.add('hidden');
     // Show map
     document.getElementById('map').classList.remove('hidden');
     // Initialize map
     optIn();
+
+    setTimeout(() => {
+        document.getElementById('opt-in-overlay').classList.add('invisible');
+    }, 10);
 });
 
 function optIn() {
@@ -42,16 +47,16 @@ function optIn() {
         stationsGeoJSON = stationsData;
         POIsGeoJSON = POIsData;
         personsGeoJSON = personsData;
-        // routeCoordinates = route8Data.features[0].geometry.coordinates;
-        routeCoordinates = stationsData.features.map(feature => feature.geometry.coordinates);
+        route8GeoJSON = route8Data;
+        routeCoordinates = route8Data.features[0].geometry.coordinates;
+        // routeCoordinates = stationsData.features.map(feature => feature.geometry.coordinates);
         POIcoordinates = POIsData.features.map(feature => feature.geometry.coordinates);
         stationCoordinates = stationsData.features.map(feature => feature.geometry.coordinates);
         stopCoordinates = stationsData.features.filter(feature => feature.properties.isStop).map(feature => feature.geometry.coordinates);
         initializeMap();
-        generatePersonIcons();
         setTimeout(() => {
             startSimulation();
-        }, 1000);
+        }, 3000);
     });
 }
 
@@ -79,15 +84,25 @@ function initializeMap() {
         .addTo(map);
     train1Marker.passengers = [];
 
+    var train2MarkerEl = document.createElement('div');
+    train2MarkerEl.className = 'train-marker';
+    train2Marker = new maptilersdk.Marker({
+        element: train2MarkerEl,
+        anchor: 'center'
+    })
+        .setLngLat(stationCoordinates[stationCoordinates.length - 1])
+        .addTo(map);
+    train2Marker.passengers = [];
+
 
 
     POIsGeoJSON.features.forEach(POI => {
+        var el = document.createElement('div');
+        el.className = 'poi-marker';
+        el.style.backgroundImage = `url(./img/POI.svg)`;
+
         const POIpopup = new maptilersdk.Popup().setText(POI.properties.name);
-        const POImarker = new maptilersdk.Marker({
-            color: '#0000FF',
-            size: 20,
-            anchor: 'center'
-        })
+        const POImarker = new maptilersdk.Marker({element: el})
             .setLngLat(POI.geometry.coordinates)
             .setPopup(POIpopup)
             .addTo(map);
@@ -110,7 +125,7 @@ function initializeMap() {
     personsGeoJSON.features.forEach(function(person) {
         var el = document.createElement('div');
         el.className = 'person-marker';
-        el.style.backgroundImage = `url(./img/${person.properties.name}.png)`;
+        el.style.backgroundImage = `url(./img/${person.properties.name}.svg)`;
         
         const personMarker = new maptilersdk.Marker({element: el})
             .setLngLat(person.geometry.coordinates)
@@ -156,8 +171,13 @@ function initializeMap() {
             data: route
         });
 
-        const stationImage = await map.loadImage('/img/station.png');
-        map.addImage('stationIcon', stationImage.data);
+        const stationImage = new Image();
+        stationImage.src = './img/Haltestelle.svg';
+        stationImage.onload = () => {
+            map.addImage('stationIcon', stationImage);
+        };
+        // const stationImage = await map.loadImage('./img/station.png');
+        // map.addImage('stationIcon', stationImage.data);
 
         map.addLayer({
             id: 'route',
@@ -173,13 +193,14 @@ function initializeMap() {
             }
         });
 
+
         map.addLayer({
             id: 'stations-layer',
             type: 'symbol',
             source: 'stations',
             layout: {
                 'icon-image': 'stationIcon',
-                'icon-size': 0.075,
+                'icon-size': 0.175,
             },
             paint: {
                     
@@ -346,6 +367,9 @@ function moveTrainMarker(marker, route, direction) {
     let hasStoppedAtCurrentStation = false;
     let lastStationCoords = null;
 
+    //TODO Image rotation
+
+
     // Display passengers
     const passengerContainer = document.createElement('div');
     passengerContainer.className = 'passenger-container';
@@ -355,7 +379,7 @@ function moveTrainMarker(marker, route, direction) {
         passengerContainer.innerHTML = '';
         marker.passengers.forEach(passenger => {
             const icon = document.createElement('img');
-            icon.src = `./img/${passenger.name}.png`;
+            icon.src = `./img/${passenger.name}.svg`;
             icon.className = 'person-marker';
 
             // This is dupicated code, but it is necessary to add the event listener to the icon
@@ -408,7 +432,7 @@ function moveTrainMarker(marker, route, direction) {
         }
     }
 
-    function handleDropoff(personMarker, currentPos) {
+    function handleDropoff(personMarker, currentPos, dropoffCount = 0) {
         if (personMarker.isAvailable) return;
 
         const person = personsGeoJSON.features.find(person => 
@@ -421,6 +445,7 @@ function moveTrainMarker(marker, route, direction) {
         
         if (isNearLocation(currentPos, destinationCoords)) {
             console.log("A destination has been reached");
+
             personMarker.setLngLat(destinationCoords);
             personMarker.getElement().style.display = 'block';
             if ( personMarker.isReturning ) {
@@ -428,14 +453,9 @@ function moveTrainMarker(marker, route, direction) {
             } else {
                 movePersonToPOI(personMarker, person.properties.destination);
             }
-
-            // Remove passenger from train
-            const passengerIndex = marker.passengers.indexOf(personMarker);
-            if (passengerIndex > -1) {
-                marker.passengers.splice(passengerIndex, 1);
-                updatePassengerIcons();
-            }
+            return true;
         }
+        return false;
     }
     function shouldStopAtLocation(currentPos, currentIndex) {
         // Check if there are any viable passengers nearby
@@ -492,9 +512,19 @@ function moveTrainMarker(marker, route, direction) {
             );
 
             if (marker.passengers.length > 0) {
-                marker.passengers.forEach(personMarker => 
-                    handleDropoff(personMarker, marker.getLngLat())
+                const passengersToProcess = [...marker.passengers];
+                const droppedOffPassengers = passengersToProcess.filter(passenger => 
+                    handleDropoff(passenger, marker.getLngLat())
                 );
+                
+                droppedOffPassengers.forEach(passenger => {
+                    const index = marker.passengers.indexOf(passenger);
+                    if (index > -1) {
+                        marker.passengers.splice(index, 1);
+                    }
+                });
+                
+                updatePassengerIcons();
             }
         }
 
@@ -535,7 +565,7 @@ function moveTrainMarker(marker, route, direction) {
                 const angle = Math.atan2(dy, dx);
                 const newLng = currentPos.lng + step * Math.cos(angle);
                 const newLat = currentPos.lat + step * Math.sin(angle);
-                marker.setLngLat([newLng, newLat]);
+                marker.setLngLat([newLng, newLat]);   
             }
 
             requestAnimationFrame(animate);
@@ -550,9 +580,7 @@ function moveTrainMarker(marker, route, direction) {
             currentIndex = direction === 1 ? route.indexOf(startPoint) : route.length - 1;
             destinationIndex = direction === 1 ? route.length - 1 : 0;
 
-            if (direction === 1) {
-                document.dispatchEvent(trainaAtStartEvent);
-            }
+            marker.setLngLat(route[currentIndex]);
             requestAnimationFrame(animate);
         }
     }
@@ -566,26 +594,6 @@ function calculateDistance(point1, point2) {
     return Math.sqrt(dx * dx + dy * dy);
 }
 
-function generatePersonIcons() {
-    const personIconsContainer = document.querySelector('.person-icons');
-    personsGeoJSON.features.forEach(person => {
-        const img = document.createElement('img');
-        img.src = `/img/${person.properties.name}.png`;
-        img.setAttribute('data-person-name', person.properties.name);
-        img.alt = person.properties.name;
-        img.className = 'person-icon';
-        img.id = person.properties.name;
-        personIconsContainer.appendChild(img);
-    });
-
-    document.querySelectorAll('.person-icon').forEach( el => {
-        el.addEventListener('click', function() {
-            const personName = el.getAttribute('data-person-name');
-            const person = personsGeoJSON.features.find(person => person.properties.name === personName);
-            selectPerson(person);
-        });
-    });
-}
 
 function selectPerson(person) {
     if (!canSelectPerson) {
@@ -594,39 +602,34 @@ function selectPerson(person) {
     selectedPerson = person;
     selectedPersonMarker = personMarkers[person.properties.name];
 
-    personsGeoJSON.features.forEach(function(person) {
-        document.getElementById(person.properties.name).classList.remove('person-icon-active');
-    });
-
-    // Highlight selected person icon and fill title and description only if person still available
-    if (document.getElementById(person.properties.name).classList.contains('person-icon-done')) {
-        return;
-    }
-    document.getElementById(person.properties.name).classList.add('person-icon-active');
-    document.getElementById('info-image').innerHTML = document.getElementById(person.properties.name).outerHTML;
+    // document.getElementById(person.properties.name).classList.add('person-icon-active');
+    // document.getElementById('info-image').innerHTML = document.getElementById(person.properties.name).outerHTML;
     document.getElementById('info-title').innerHTML = person.properties.name;
     document.getElementById('info-start').innerHTML = person.properties.homeStation;
     document.getElementById('info-destination').innerHTML = person.properties.destinationStation;
     document.getElementById('info-text').innerHTML = person.properties.info;
+    document.getElementById('poi-image-container').innerHTML = '';
+
+    document.getElementById('map-overlay').classList.add('darkened');
+    document.getElementById('info-box').classList.remove('hidden');
+
+    // Update marker selection visual
+    Object.values(personMarkers).forEach(marker => {
+        marker.getElement().classList.remove('person-marker-selected');
+    });
+    personMarkers[person.properties.name].getElement().classList.add('person-marker-selected');
+
 }
 
 function selectPOI(poi) {
-    document.getElementById('info-image').innerHTML = '';
     document.getElementById('info-title').innerHTML = poi.properties.name;
     document.getElementById('info-start').innerHTML = '';
     document.getElementById('info-destination').innerHTML = '';
     document.getElementById('info-text').innerHTML = '';
+    document.getElementById('poi-image-container').innerHTML = `<img id="poi-image" src="${poi.properties.image}" alt="${poi.properties.name}" class="info-image">`;
 
 }
 
-function updatePersonIconsState() {
-    const container = document.querySelector('.person-icons');
-    if (!canSelectPerson) {
-        container.classList.add('not-allowed');
-    } else {
-        container.classList.remove('not-allowed');
-    }
-}
 
 function startSimulation() {
     // Clear any existing timeouts
@@ -635,6 +638,7 @@ function startSimulation() {
 
     // Start train
     moveTrainMarker(train1Marker, routeCoordinates, 1);
+    moveTrainMarker(train2Marker, routeCoordinates, -1);
 
     personsGeoJSON.features.forEach(person => {
         const delay = person.properties.startTimer || 0; // Default delay if not specified

@@ -5,32 +5,16 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.778320272371287, 53.013825231435376]
-        },
-        "properties": {
-          "name": "Max",
-          "destination": "Friedhof Huchting",
-          "destinationStation": "Dovemoorstraße",
-          "homeStation": "Brinkum Bahnhofstraße",
-          "startTimer": 2000,
-          "returnTimer": 3000,
-          "info": "Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam urna tempor pulvinar vivamus fringilla lacus nec metus bibendum egestas."
-        }
-      },
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
           "coordinates": [8.727488508968516, 53.02883996016038]
         },
         "properties": {
-          "name": "Elise",
+          "name": "Berta",
           "destination": "Rathaus Stuhr",
           "destinationStation": "Bf Stuhr",
           "homeStation": "Hespenstraße",
           "startTimer": 10000,
-          "returnTimer": 3000,
-          "info": "Elise arbeitet für die Gemeinde im Rathaus Stuhr."
+          "returnTimer": 20000,
+          "info": "Auch wenn sie lange in Bonn gelebt hat: Mit ihrem Wellensittich ist Berta in Stuhr bekannt wie ein bunter Hund. Den hat sie nämlich immer dabei, wenn sie unterwegs ist. Ein Auto hat die alleinstehende Sozialpädagogin aus Überzeugung seit Jahrzehnten nicht mehr. Mit dem Rad aber sind ihr die meisten Strecken mittlerweile allerdings zu weit. Die Bahn kommt da gerade recht."
         }
       },
       {
@@ -40,45 +24,61 @@
           "coordinates": [8.74032759702164, 53.03148012380614]
         },
         "properties": {
-          "name": "Jim",
-          "destination": "Jugendtreff Haus am Wall",
-          "destinationStation": "Bassumer",
+          "name": "Dorothea",
+          "destination": "Rathaus Stuhr",
+          "destinationStation": "Bf Stuhr",
           "homeStation": "Beethovenstraße",
           "startTimer": 6000,
-          "returnTimer": 3000,
-          "info": "Jim möchte zum Jugendtreff Haus am Wall."
+          "returnTimer": 30000,
+          "info": "Witwe Dorothea fährt nie allein. Immer hat sie ihren Yorkshire Terrier dabei, egal, wohin es geht. Früher hat ihr Mann sie und die zwei gemeinsamen Töchter mit dem Auto zu jedem gewünschten Ziel gefahren. Nach seinem Tod ist die ehemalige Sekretärin auf die Bahn umgestiegen – mit ihren 75 Jahren möchte sie sich nicht wieder selbst hinters Steuer setzen."
         }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.794658027162269, 53.00953015186863]
+          "coordinates": [8.728477220921802, 53.03623659384103]
         },
         "properties": {
-          "name": "Anna",
-          "destination": "KGS-Leeste",
-          "destinationStation": "Bf Leeste",
-          "homeStation": "Bassumer",
-          "startTimer": 15000,
-          "returnTimer": 3000,
-          "info": "Anna arbeitet als Köchin am KGS-Leeste."
-        }
-      },
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [8.78179798050083, 52.999716026400094]
-        },
-        "properties": {
-          "name": "Gisela",
-          "destination": "Grundschule Brinkum",
-          "destinationStation": "Brinkum Bahnhofstraße",
-          "homeStation": "Bf Erichshof",
+          "name": "Merit",
+          "destination": "KGS Stuhr-Brinkum",
+          "destinationStation": "Bassumer Straße",
+          "homeStation": "Bf Moordeich",
           "startTimer": 0,
-          "returnTimer": 3000,
-          "info": "Oma Gisela möchte ihre Kinder von der Grundschule Brinkum abholen."
+          "returnTimer": 30000,
+          "info": "Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam urna tempor pulvinar vivamus fringilla lacus nec metus bibendum egestas."
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.767089823022214, 53.01853926917435]
+        },
+        "properties": {
+          "name": "Natascha",
+          "destination": "KGS Stuhr-Brinkum",
+          "destinationStation": "Bassumer Straße",
+          "homeStation": "Stuhrbaum",
+          "startTimer": 0,
+          "returnTimer": 10000,
+          "info": "Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam urna tempor pulvinar vivamus fringilla lacus nec metus bibendum egestas."
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.83382218013945, 52.997804171325136]
+        },
+        "properties": {
+          "name": "Finn",
+          "destination": "KGS Stuhr-Brinkum",
+          "destinationStation": "Bassumer Straße",
+          "homeStation": "Hagener Straße",
+          "startTimer": 0,
+          "returnTimer": 30000,
+          "info": "Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam urna tempor pulvinar vivamus fringilla lacus nec metus bibendum egestas."
         }
       }
     ]

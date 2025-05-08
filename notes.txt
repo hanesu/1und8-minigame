@@ -18,3 +18,5 @@ easeInOut bei Stationen
 ! Loop Personen Tagesablauf
 
 Eigene POI Infobox
+
+Passenger Icons nicht darkened bei click

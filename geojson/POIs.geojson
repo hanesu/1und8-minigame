@@ -20,29 +20,8 @@
         },
         "properties": {
           "name": "Rathaus Stuhr",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        }
-      },
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [8.797241466903529, 52.99732949706448]
-        },
-        "properties": {
-          "name": "Ortsfeuerwehr Erichshof",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        }
-      },
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [8.779791663902396, 53.00507142422645]
-        },
-        "properties": {
-          "name": "Jugendtreff Haus am Wall",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/Rathaus Stuhr.svg"
         }
       },
       {
@@ -53,18 +32,116 @@
         },
         "properties": {
           "name": "KGS-Leeste",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/KGS-Leeste.svg"
         }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.785130033427333, 53.01140349888176]
+          "coordinates": [8.777970793215495, 53.00533854868079]
         },
         "properties": {
-          "name": "Grundschule Brinkum",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+          "name": "KGS Stuhr-Brinkum",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/KGS StuhrBrinkum.svg"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.816366153977626, 52.987743571242554]
+        },
+        "properties": {
+          "name": "Seniorenzentrum Weyhe",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/Seniorenzentrum Weyhe.svg"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.81647045531071, 52.99023471746573]
+        },
+        "properties": {
+          "name": "Gelateria La Luna",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/Gelateria La Luna.svg"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.816322079915443, 52.98745860353071]
+        },
+        "properties": {
+          "name": "Kulturscheune Weyhe",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/KulturscheuneBibliothek.svg"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.82154609491352, 52.994023011664936]
+        },
+        "properties": {
+          "name": "Famila",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/Famila.svg"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.726978282218363, 53.03505349027752]
+        },
+        "properties": {
+          "name": "Hochhaus Moordeich",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/Famila.svg"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.782630905044622, 53.005951629115316]
+        },
+        "properties": {
+          "name": "Discgolf Anlage",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/Discgolfanlage.svg"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.735369432456164, 53.02693723910702]
+        },
+        "properties": {
+          "name": "Sportanlage Moordeich",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/Sportanlage-Moordeich.svg"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.818903587848316, 52.9946918308363]
+        },
+        "properties": {
+          "name": "Bahnhof Leeste",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "/img/poi/Bahnhof Leeste.svg"
         }
       }
     ]
