@@ -285,8 +285,9 @@ function movePersonToPOI(marker, POIname) {
                 marker.waitingAtPOI = false;
                 marker.isReturning = true;
                 marker.isAvailable = true;
-                movePersonToStation(marker, marker.destinationStation);
+                const originalDestination = marker.destinationStation;
                 marker.destinationStation = marker.homeStation;
+                movePersonToStation(marker, originalDestination);
             }, waitTime) // Wait for x seconds before returning to station
         }
     }
@@ -408,6 +409,14 @@ function moveTrainMarker(marker, route, direction) {
     }
 
     function handlePickup(personMarker, currentPos, currentIndex) {
+        console.log('Trying to pickup:', {
+            name: personMarker.name,
+            isAvailable: personMarker.isAvailable,
+            isReturning: personMarker.isReturning,
+            destinationStation: personMarker.destinationStation,
+            currentPos: currentPos,
+            personPos: personMarker.getLngLat()
+        });
         const personLngLat = personMarker.getLngLat();
         const distance = calculateDistance(currentPos, [personLngLat.lng, personLngLat.lat]);
         
@@ -425,11 +434,14 @@ function moveTrainMarker(marker, route, direction) {
         
         if (distance < 0.0002 && personMarker.isAvailable && willPassDestination) {
             marker.passengers.push(personMarker);
+            console.log(marker.passengers);
             personMarker.isAvailable = false;
             personMarker.getElement().style.display = 'none';
             updatePassengerIcons();
             console.log(`Added passenger ${personMarker.name} to train going ${direction > 0 ? 'forward' : 'backward'}`);
+            return true;
         }
+        return false;
     }
 
     function handleDropoff(personMarker, currentPos, dropoffCount = 0) {
@@ -507,25 +519,31 @@ function moveTrainMarker(marker, route, direction) {
             hasStoppedAtCurrentStation = true;
             lastStationCoords = marker.getLngLat();
 
-            Object.values(personMarkers).forEach(personMarker => 
-                handlePickup(personMarker, marker.getLngLat(), currentIndex)
-            );
+        const availablePassengers = Object.values(personMarkers).filter(personMarker => 
+            personMarker.isAvailable && 
+            isNearLocation(marker.getLngLat(), [personMarker.getLngLat().lng, personMarker.getLngLat().lat])
+        );
 
-            if (marker.passengers.length > 0) {
-                const passengersToProcess = [...marker.passengers];
-                const droppedOffPassengers = passengersToProcess.filter(passenger => 
-                    handleDropoff(passenger, marker.getLngLat())
-                );
-                
-                droppedOffPassengers.forEach(passenger => {
-                    const index = marker.passengers.indexOf(passenger);
-                    if (index > -1) {
-                        marker.passengers.splice(index, 1);
-                    }
-                });
-                
-                updatePassengerIcons();
-            }
+        availablePassengers.forEach(personMarker => {
+            handlePickup(personMarker, marker.getLngLat(), currentIndex);
+        });
+
+        // Process dropoffs
+        if (marker.passengers.length > 0) {
+            const passengersToProcess = [...marker.passengers];
+            const droppedOffPassengers = passengersToProcess.filter(passenger => 
+                handleDropoff(passenger, marker.getLngLat())
+            );
+            
+            droppedOffPassengers.forEach(passenger => {
+                const index = marker.passengers.indexOf(passenger);
+                if (index > -1) {
+                    marker.passengers.splice(index, 1);
+                }
+            });
+            
+            updatePassengerIcons();
+        }
         }
 
         if ((direction === 1 && currentIndex < destinationIndex) || 
