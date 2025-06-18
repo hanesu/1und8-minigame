@@ -8,10 +8,14 @@ let canSelectPerson = true;
 // personMarkers map to be used in selectPerson function
 let personMarkers = {};
 let peopleAtPOIs = {};
+let POIMarkers = {};
 
 let train1Marker = null;
 let simulationTimeouts = [];
 let train1Interval = null;
+
+// Cache for SVG images
+const svgCache = new Map();
 
 
 document.getElementById('opt-in-button').addEventListener('click', () => {
@@ -97,20 +101,28 @@ function initializeMap() {
 
 
     POIsGeoJSON.features.forEach(POI => {
-        var el = document.createElement('div');
+        const container = document.createElement('div');
+        container.className = 'poi-container';
+
+        const el = document.createElement('div');
         el.className = 'poi-marker';
         el.style.backgroundImage = `url(./img/POI.svg)`;
 
-        const POIpopup = new maptilersdk.Popup().setText(POI.properties.name);
-        const POImarker = new maptilersdk.Marker({element: el})
+        const peopleContainer = document.createElement('div');
+        peopleContainer.className = `people-container people-${POI.properties.peoplePosition || 'left'}`;
+        container.appendChild(peopleContainer);
+        container.appendChild(el);
+
+        const POImarker = new maptilersdk.Marker({element: container})
             .setLngLat(POI.geometry.coordinates)
-            .setPopup(POIpopup)
             .addTo(map);
 
-        POImarker.getElement().addEventListener('click', (e) => {
+        POImarker.peopleContainer = peopleContainer;
+        POIMarkers[POI.properties.name] = POImarker;
+
+        el.addEventListener('click', (e) => {
             e.stopPropagation();
-    
-            // Reset any previously selected markers
+            
             Object.values(personMarkers).forEach(marker => {
                 marker.getElement().classList.remove('person-marker-selected');
             });
@@ -118,6 +130,7 @@ function initializeMap() {
             selectPOI(POI);
             document.getElementById('map-overlay').classList.add('darkened');
             document.getElementById('info-box').classList.remove('hidden');
+            
         });
     });
 
@@ -126,6 +139,23 @@ function initializeMap() {
         var el = document.createElement('div');
         el.className = 'person-marker';
         el.style.backgroundImage = `url(./img/${person.properties.name}.svg)`;
+
+        // Cache SVG images to avoid multiple fetch requests
+        fetch(`./img/${person.properties.name}.svg`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Image for ${person.properties.name} not found`);
+                }
+                const url = `./img/${person.properties.name}.svg`;
+                svgCache.set(person.properties.name, url);
+                el.style.backgroundImage = `url(${url})`;
+            })
+            .catch(error => {
+                console.warn(error);
+                const fallbackUrl = './img/Hund.svg';
+                svgCache.set(person.properties.name, fallbackUrl);
+                el.style.backgroundImage = `url(${fallbackUrl})`; 
+            });
         
         const personMarker = new maptilersdk.Marker({element: el})
             .setLngLat(person.geometry.coordinates)
@@ -136,11 +166,13 @@ function initializeMap() {
 
         personMarker.isAvailable = true;
         personMarker.name = person.properties.name;
-        personMarker.destinationStation = person.properties.destinationStation;
         personMarker.home = person.geometry.coordinates;
         personMarker.homeStation = person.properties.homeStation;
+        personMarker.destinationStation = person.properties.destinationStation;
+        personMarker.currentDestination = person.properties.destinationStation;
         personMarker.isReturning = false;
         personMarker.waitingAtPOI = false;
+        personMarker.isMoving = false;
         
 
         personMarker.getElement().addEventListener('click', (e) => {
@@ -237,7 +269,7 @@ function movePersonToStation(marker, stationName) {
         if (t < 1) {
             requestAnimationFrame(animate);
         } else {
-            console.log('Person reached station');
+            marker.isMoving = false;
         }
     }
     requestAnimationFrame(animate);
@@ -245,54 +277,59 @@ function movePersonToStation(marker, stationName) {
 
 function movePersonToPOI(marker, POIname) {
     const person = personsGeoJSON.features.find(p => p.properties.name === marker.name);
-    const POI = findPOIByName(POIname).geometry.coordinates;
+    const POI = findPOIByName(POIname);
+    const POImarker = POIMarkers[POIname];
+    const POIcoords = POI.geometry.coordinates;
 
     const start = marker.getLngLat();
     const startLngLat = [start.lng, start.lat];
     const duration = 1500;
     const startTime = performance.now();
-    const waitTime = person.properties.returnTimer || 3000; // Default wait time if not specified
-
-    const popup = new maptilersdk.Popup({
-        className: 'destination-popup',
-        closeButton: false,
-        closeOnClick: true,
-        offset: 25
-    }).setHTML('&#128516;');
+    const waitTime = person.properties.returnTimer || 3000;
 
     function animate(time) {
         const elapsed = time - startTime;
         const t = Math.min(elapsed / duration, 1);
 
-        const lng = startLngLat[0] + (POI[0] - startLngLat[0]) * t;
-        const lat = startLngLat[1] + (POI[1] - startLngLat[1]) * t;
+        const lng = startLngLat[0] + (POIcoords[0] - startLngLat[0]) * t;
+        const lat = startLngLat[1] + (POIcoords[1] - startLngLat[1]) * t;
 
         marker.setLngLat([lng, lat]);
 
         if (t < 1) {
             requestAnimationFrame(animate);
         } else {
-            console.log('Person reached POI');
-            marker.setPopup(popup);
-            marker.togglePopup();
+            // Add person to POI
+            const personEl = document.createElement('div');
+            personEl.className = 'poi-person';
+            personEl.style.backgroundImage = `url(${svgCache.get(marker.name)})`;
+            
+            personEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectPerson(person);
+                document.getElementById('map-overlay').classList.add('darkened');
+                document.getElementById('info-box').classList.remove('hidden');
+                personEl.classList.add('person-marker-selected');
+            });
+
+            POImarker.peopleContainer.appendChild(personEl);
+            marker.getElement().style.display = 'none';
             marker.waitingAtPOI = true;
 
             // Return timer
             setTimeout(() => {
-                popup.remove();
-            }, 1500); // Popup timer
-            setTimeout(() => {
+                personEl.remove();
                 marker.waitingAtPOI = false;
                 marker.isReturning = true;
                 marker.isAvailable = true;
-                const originalDestination = marker.destinationStation;
-                marker.destinationStation = marker.homeStation;
-                movePersonToStation(marker, originalDestination);
-            }, waitTime) // Wait for x seconds before returning to station
+                marker.currentDestination = person.properties.homeStation;
+                marker.getElement().style.display = 'block';
+            }, waitTime);
         }
     }
     requestAnimationFrame(animate);
 }
+
 function movePersonToHome(marker, coords) {
     const start = marker.getLngLat();
     const startLngLat = [start.lng, start.lat];
@@ -304,7 +341,7 @@ function movePersonToHome(marker, coords) {
         closeButton: false,
         closeOnClick: true,
         offset: 25
-    }).setHTML('&#128522;');
+    }).setHTML('&#x1F3E0;');
 
     function animate(time) {
         const elapsed = time - startTime;
@@ -318,15 +355,22 @@ function movePersonToHome(marker, coords) {
         if (t < 1) {
             requestAnimationFrame(animate);
         } else {
-            console.log('Person returned home');
             marker.setPopup(popup);
             marker.togglePopup();
             marker.isReturning = false;
-            marker.isAvailable = false;
+            marker.isAvailable = true;
+            marker.waitingAtPOI = false;
+            marker.isMoving = false;
+            marker.currentDestination = marker.destinationStation;
+
+            // find original person data to reset destination
+            const person = personsGeoJSON.features.find(p => 
+                p.properties.name === marker.name
+            );
+            marker.destinationStation = person.properties.destinationStation;
             
             setTimeout(() => {
                 popup.remove();
-                
             }, 1500);
         }
     }
@@ -380,7 +424,7 @@ function moveTrainMarker(marker, route, direction) {
         passengerContainer.innerHTML = '';
         marker.passengers.forEach(passenger => {
             const icon = document.createElement('img');
-            icon.src = `./img/${passenger.name}.svg`;
+            icon.src = svgCache.get(passenger.name) || './img/Hund.svg';
             icon.className = 'person-marker';
 
             // This is dupicated code, but it is necessary to add the event listener to the icon
@@ -409,18 +453,19 @@ function moveTrainMarker(marker, route, direction) {
     }
 
     function handlePickup(personMarker, currentPos, currentIndex) {
-        console.log('Trying to pickup:', {
-            name: personMarker.name,
-            isAvailable: personMarker.isAvailable,
-            isReturning: personMarker.isReturning,
-            destinationStation: personMarker.destinationStation,
-            currentPos: currentPos,
-            personPos: personMarker.getLngLat()
-        });
+        // console.log('Trying to pickup:', {
+        //     name: personMarker.name,
+        //     isAvailable: personMarker.isAvailable,
+        //     isReturning: personMarker.isReturning,
+        //     destinationStation: personMarker.destinationStation,
+        //     currentPos: currentPos,
+        //     personPos: personMarker.getLngLat()
+        // });
         const personLngLat = personMarker.getLngLat();
         const distance = calculateDistance(currentPos, [personLngLat.lng, personLngLat.lat]);
         
-        const destinationStation = findStationByName(personMarker.destinationStation);
+
+        const destinationStation = findStationByName(personMarker.currentDestination);
         if (!destinationStation) return;
 
         const destinationCoords = destinationStation.geometry.coordinates;
@@ -434,41 +479,38 @@ function moveTrainMarker(marker, route, direction) {
         
         if (distance < 0.0002 && personMarker.isAvailable && willPassDestination) {
             marker.passengers.push(personMarker);
-            console.log(marker.passengers);
             personMarker.isAvailable = false;
             personMarker.getElement().style.display = 'none';
             updatePassengerIcons();
-            console.log(`Added passenger ${personMarker.name} to train going ${direction > 0 ? 'forward' : 'backward'}`);
             return true;
         }
         return false;
     }
 
     function handleDropoff(personMarker, currentPos, dropoffCount = 0) {
-        if (personMarker.isAvailable) return;
+        if (personMarker.isAvailable) return false;
 
-        const person = personsGeoJSON.features.find(person => 
-            person.properties.name === personMarker.name
-        );
-        const destinationStation = findStationByName(personMarker.destinationStation);
-        if (!destinationStation) return;
+        const destinationStation = findStationByName(personMarker.currentDestination);
+        if (!destinationStation) return false;
 
         const destinationCoords = destinationStation.geometry.coordinates;
         
-        if (isNearLocation(currentPos, destinationCoords)) {
-            console.log("A destination has been reached");
+        if (isNearLocation({lng: currentPos.lng, lat: currentPos.lat}, destinationCoords)) {
 
             personMarker.setLngLat(destinationCoords);
             personMarker.getElement().style.display = 'block';
+
             if ( personMarker.isReturning ) {
                 movePersonToHome(personMarker, personMarker.home);
             } else {
+                const person = personsGeoJSON.features.find(p => p.properties.name === personMarker.name);
                 movePersonToPOI(personMarker, person.properties.destination);
             }
             return true;
         }
         return false;
     }
+
     function shouldStopAtLocation(currentPos, currentIndex) {
         // Check if there are any viable passengers nearby
         const hasViablePassenger = Object.values(personMarkers).some(personMarker => {
@@ -479,7 +521,7 @@ function moveTrainMarker(marker, route, direction) {
             if (!isNearLocation(currentPos, [personLngLat.lng, personLngLat.lat])) return false;
     
             // Check if person's destination is along train's route
-            const destinationStation = findStationByName(personMarker.destinationStation);
+            const destinationStation = findStationByName(personMarker.currentDestination);
             if (!destinationStation) return false;
     
             const destinationCoords = destinationStation.geometry.coordinates;
@@ -495,12 +537,33 @@ function moveTrainMarker(marker, route, direction) {
     
         // Check if this is a destination station for any current passenger
         const isDestinationStation = marker.passengers.some(passenger => {
-            const destinationStation = findStationByName(passenger.destinationStation);
+            const destinationStation = findStationByName(passenger.currentDestination);
             if (!destinationStation) return false;
             return isNearLocation(currentPos, destinationStation.geometry.coordinates);
         });
     
         return hasViablePassenger || isDestinationStation;
+    }
+
+    function checkForPersonMovement(currentPos) {
+        Object.values(personMarkers).forEach(personMarker => {
+            if (!personMarker.isMoving && personMarker.isAvailable && !personMarker.waitingAtPOI) {
+                const targetStation = personMarker.isReturning ? 
+                    personMarker.destinationStation : 
+                    personMarker.homeStation;
+                    
+                const triggerStation = findStationBeforeTarget(targetStation, direction, 3);
+                if (!triggerStation) return;
+                
+                const triggerStationData = findStationByName(triggerStation);
+                if (!triggerStationData) return;
+                
+                if (isNearLocation(currentPos, triggerStationData.geometry.coordinates)) {
+                    personMarker.isMoving = true;
+                    movePersonToStation(personMarker, targetStation);
+                }
+            }
+        });
     }
 
     function animate(timestamp) {
@@ -552,7 +615,8 @@ function moveTrainMarker(marker, route, direction) {
             const nextIndex = currentIndex + direction;
             const nextPos = route[nextIndex];
 
-            const step = 0.00015; // Adjust step size for animation train speed
+            //!
+            const step = 0.00005; // Adjust step size for animation train speed
             const dx = nextPos[0] - currentPos.lng;
             const dy = nextPos[1] - currentPos.lat;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -575,6 +639,7 @@ function moveTrainMarker(marker, route, direction) {
                 requestAnimationFrame(animate);
                 return;
             }
+            checkForPersonMovement({lng: currentCoords[0], lat: currentCoords[1]});
 
             if (distance < step) {
                 marker.setLngLat(nextPos);
@@ -589,17 +654,36 @@ function moveTrainMarker(marker, route, direction) {
             requestAnimationFrame(animate);
         } else {
             // Reached end point, flip direction and restart
-            direction *= -1;
+            // if train at Roland-Center, wait 10 seconds before flipping direction
+            const currentPos = marker.getLngLat();
+            const rolandCenter = findStationByName('Roland-Center');
 
-            const temp = startPoint;
-            startPoint = endPoint;
-            endPoint = temp;
-            
-            currentIndex = direction === 1 ? route.indexOf(startPoint) : route.length - 1;
-            destinationIndex = direction === 1 ? route.length - 1 : 0;
+            if (isNearLocation(currentPos, rolandCenter.geometry.coordinates)) {
+                marker.getElement().classList.add('hidden');
 
-            marker.setLngLat(route[currentIndex]);
-            requestAnimationFrame(animate);
+                setTimeout(() => {
+                    marker.getElement().classList.remove('hidden');
+                    direction *= -1;
+                    const temp = startPoint;
+                    startPoint = endPoint;
+                    endPoint = temp;
+                    currentIndex = direction === 1 ? route.indexOf(startPoint) : route.length - 1;
+                    destinationIndex = direction === 1 ? route.length - 1 : 0;
+                    marker.setLngLat(route[currentIndex]);
+                    requestAnimationFrame(animate);
+                }, 10000);
+            } else {
+                direction *= -1;
+                const temp = startPoint;
+                startPoint = endPoint;
+                endPoint = temp;
+                
+                currentIndex = direction === 1 ? route.indexOf(startPoint) : route.length - 1;
+                destinationIndex = direction === 1 ? route.length - 1 : 0;
+
+                marker.setLngLat(route[currentIndex]);
+                requestAnimationFrame(animate);
+            }
         }
     }
 
@@ -621,8 +705,10 @@ function selectPerson(person) {
     selectedPersonMarker = personMarkers[person.properties.name];
 
     // document.getElementById(person.properties.name).classList.add('person-icon-active');
-    // document.getElementById('info-image').innerHTML = document.getElementById(person.properties.name).outerHTML;
+    document.getElementById('info-image').innerHTML = `<img id="info-image" src="./img/${person.properties.name}.svg" class="info-image">`;
+    document.getElementById('info-image').classList.remove('hidden');
     document.getElementById('info-title').innerHTML = person.properties.name;
+    document.getElementById('info-ul').classList.remove('hidden');
     document.getElementById('info-start').innerHTML = person.properties.homeStation;
     document.getElementById('info-destination').innerHTML = person.properties.destinationStation;
     document.getElementById('info-text').innerHTML = person.properties.info;
@@ -641,11 +727,41 @@ function selectPerson(person) {
 
 function selectPOI(poi) {
     document.getElementById('info-title').innerHTML = poi.properties.name;
-    document.getElementById('info-start').innerHTML = '';
-    document.getElementById('info-destination').innerHTML = '';
+    document.getElementById('info-image').classList.add('hidden');
+    document.getElementById('info-ul').classList.add('hidden');
     document.getElementById('info-text').innerHTML = '';
     document.getElementById('poi-image-container').innerHTML = `<img id="poi-image" src="${poi.properties.image}" alt="${poi.properties.name}" class="info-image">`;
 
+}
+
+function findStationBeforeTarget(targetStation, direction, stationsAhead = 3) {
+    const stationsList = stationsGeoJSON.features.map(station => station.properties.name);
+    const targetIndex = stationsList.indexOf(targetStation);
+    if (targetIndex === -1) return null;
+    
+    const lookAheadIndex = direction === 1 ? 
+        targetIndex - stationsAhead : 
+        targetIndex + stationsAhead;
+        
+    if (lookAheadIndex >= 0 && lookAheadIndex < stationsList.length) {
+        return stationsList[lookAheadIndex];
+    }
+    return null;
+}
+
+function findNearestStation(position) {
+    let nearestStation = null;
+    let shortestDistance = Infinity;
+    
+    stationsGeoJSON.features.forEach(station => {
+        const distance = calculateDistance(position, station.geometry.coordinates);
+        if (distance < shortestDistance) {
+            shortestDistance = distance;
+            nearestStation = station.properties.name;
+        }
+    });
+    
+    return nearestStation;
 }
 
 
@@ -658,12 +774,4 @@ function startSimulation() {
     moveTrainMarker(train1Marker, routeCoordinates, 1);
     moveTrainMarker(train2Marker, routeCoordinates, -1);
 
-    personsGeoJSON.features.forEach(person => {
-        const delay = person.properties.startTimer || 0; // Default delay if not specified
-        const personMarker = personMarkers[person.properties.name];
-
-        simulationTimeouts.push(setTimeout(() => {
-            movePersonToStation(personMarker, personMarker.homeStation);
-        }, delay));
-    })
 }

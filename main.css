@@ -63,7 +63,7 @@ h1 {
     opacity: 1;
     z-index: 10;
     position: absolute;
-    border-radius: 25px;
+    border-radius: 15px;
 
     padding-left: 3rem;
     padding-right: 3rem;
@@ -89,6 +89,12 @@ h1 {
             margin: 0;
         }
 
+        #info-image {
+            height: 7rem;
+            border-radius: 100%;
+            background-color: #EEEEEE;
+        }
+
         p {
             margin-top: 0.5rem;
             margin-bottom: 0.5rem;
@@ -98,6 +104,17 @@ h1 {
             list-style-type: none;
             padding: 0;
             margin: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+        }
+
+        .info-stations {
+            position: relative;
+            height: 1.5rem;
+            margin-right: 10px;
         }
     }
     #info-text {
@@ -119,7 +136,7 @@ h1 {
         padding: 15px 25px;
         font-size: 1rem;
         cursor: pointer;
-        border-radius: none;
+        border-radius: 5px;
     }
 
     #poi-image {
@@ -195,7 +212,8 @@ h1 {
 }
 .poi-marker:hover {
     cursor: pointer;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5))
+    brightness(1.2);
 }
 
 .train-marker {
@@ -262,4 +280,48 @@ h1 {
     font-size: 1rem;
     cursor: pointer;
     border-radius: 0px;
+}
+
+
+
+
+
+.poi-container {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+}
+
+.people-container {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.people-left {
+    right: 100%;
+    margin-right: 5px;
+}
+
+.people-right {
+    left: 100%;
+    margin-left: 5px;
+}
+
+.poi-person {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.2s;
+}
+
+.poi-person:hover {
+    transform: scale(1.2);
+    cursor: pointer;
 }

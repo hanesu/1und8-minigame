@@ -25,8 +25,8 @@
         },
         "properties": {
           "name": "Dorothea",
-          "destination": "Rathaus Stuhr",
-          "destinationStation": "Bf Stuhr",
+          "destination": "Famila",
+          "destinationStation": "Bf Leeste",
           "homeStation": "Beethovenstraße",
           "startTimer": 6000,
           "returnTimer": 30000,
@@ -46,7 +46,7 @@
           "homeStation": "Dovemoorstraße",
           "startTimer": 0,
           "returnTimer": 10000,
-          "info": "Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam urna tempor pulvinar vivamus fringilla lacus nec metus bibendum egestas."
+          "info": "Tik Toks und Videos sind ihr größtes Hobby – und ihr Traum. Später will sie Influencerin werden. Reisen, berühmt sein. Jetzt ist aber schon mal gut, dass sie nichtmehr von Mama oder Papa überall hingefahren werden muss. Dafür ist sie echt auch zu alt. Peinlich ist das, wenn sie mit den Freundinnen shoppen will und die Eltern sind immer irgendwie dabei. Ehrlich, geht gar nicht. Da lieber Bahn fahren."
         }
       },
       {
@@ -60,9 +60,9 @@
           "destination": "KGS Stuhr-Brinkum",
           "destinationStation": "Bassumer Straße",
           "homeStation": "Stuhrbaum",
-          "startTimer": 0,
-          "returnTimer": 1000,
-          "info": "Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam urna tempor pulvinar vivamus fringilla lacus nec metus bibendum egestas."
+          "startTimer": 5000,
+          "returnTimer": 10000,
+          "info": "Pferde sind ihr Hobby – jetzt sag keiner: Typisch Mädchen. Dass kann Natascha nicht leiden. Reittherapeutin ist ein echter Beruf. Gerade macht sie ein Praktikum auf dem Hof, denkt an ihre Zukunft – und Fin, den findet sie nämlich echt süß. Für ihre Eltern ist sie noch »die Kleine«. Das nervt zwar, dass sie sich Sorgen machen, ist aber okay. Und wenn sie die Bahn nimmt, darf sie jetzt auch mal später heimkommen."
         }
       },
       {
@@ -76,9 +76,25 @@
           "destination": "KGS Stuhr-Brinkum",
           "destinationStation": "Bassumer Straße",
           "homeStation": "Hagener Straße",
+          "startTimer": 20000,
+          "returnTimer": 3000,
+          "info": "Fin ist gerade 15 Jahre alt geworden - und hat das gebührend gefeiert. Zusammen mit seinen Freunden ist er unterwegs gewesen bis – naja, länger als eigentlich erlaubt. Aber mit der Bahn war er schnell zuhause. Früher musste er immer rumkutschiert werden - zum Handball-Training nach Stuhr, zu seinen Freunden und so. Jetzt fährt er Bahn und ist völlig unabhängig. Das ist richtig toll!"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.812082689140118, 52.99244807193893]
+        },
+        "properties": {
+          "name": "Holger",
+          "destination": "Discgolf Anlage",
+          "destinationStation": "Studtriede",
+          "homeStation": "Bf Leeste",
           "startTimer": 0,
           "returnTimer": 3000,
-          "info": "Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam urna tempor pulvinar vivamus fringilla lacus nec metus bibendum egestas."
+          "info": "Holger"
         }
       }
     ]

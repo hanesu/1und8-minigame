@@ -21,7 +21,8 @@
         "properties": {
           "name": "Rathaus Stuhr",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/Rathaus Stuhr.svg"
+          "image": "/img/poi/Rathaus Stuhr.svg",
+          "peoplePosition": "right"
         }
       },
       {
@@ -93,7 +94,8 @@
         "properties": {
           "name": "Famila",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/Famila.svg"
+          "image": "/img/poi/Famila.svg",
+          "peoplePosition": "right"
         }
       },
       {
@@ -117,7 +119,8 @@
         "properties": {
           "name": "Discgolf Anlage",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/Discgolfanlage.svg"
+          "image": "/img/poi/Discgolfanlage.svg",
+          "peoplePosition": "right"
         }
       },
       {
