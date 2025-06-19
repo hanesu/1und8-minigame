@@ -48,7 +48,6 @@ h1 {
     background: rgba(0, 0, 0, 0.5);
 }
 
-
 #info-box {
     display: flex;
     flex-direction: column;
@@ -147,11 +146,6 @@ h1 {
     
 }
 
-.person-marker-selected {
-    z-index: 2;
-    filter: brightness(100%);
-}
-
 .person-icons {
     display: flex;
     justify-content: space-around;
@@ -194,10 +188,36 @@ h1 {
     height: 50px;
     background-size: contain;
     background-repeat: no-repeat;
+    background-color: #eeeeee;
 }
 .person-marker:hover {
     cursor: pointer;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+.person-marker-small {
+    display: block;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #eeeeee;
+}
+.person-marker-small:hover {
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+.person-marker-selected {
+    filter: brightness(100%);
+    z-index: 10;
+}
+
+.marker-selected {
+    filter: brightness(100%) drop-shadow(0 0 8px gold);
+    z-index: 10;
 }
 
 .poi-marker {

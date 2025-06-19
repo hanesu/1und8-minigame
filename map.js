@@ -124,20 +124,21 @@ function initializeMap() {
             e.stopPropagation();
             
             Object.values(personMarkers).forEach(marker => {
-                marker.getElement().classList.remove('person-marker-selected');
+                marker.getElement().classList.remove('marker-selected');
             });
 
             selectPOI(POI);
             document.getElementById('map-overlay').classList.add('darkened');
             document.getElementById('info-box').classList.remove('hidden');
-            
+            selectedPerson = null;
         });
     });
 
     // generate person markers from persons.geojson
     personsGeoJSON.features.forEach(function(person) {
-        var el = document.createElement('div');
+        const el = document.createElement('div');
         el.className = 'person-marker';
+        el.setAttribute('data-name', person.properties.name);
         el.style.backgroundImage = `url(./img/${person.properties.name}.svg)`;
 
         // Cache SVG images to avoid multiple fetch requests
@@ -178,16 +179,8 @@ function initializeMap() {
         personMarker.getElement().addEventListener('click', (e) => {
             e.stopPropagation(); // Prevent map click event from firing
 
-            // Reset any previously selected markers
-            Object.values(personMarkers).forEach(marker => {
-                marker.getElement().classList.remove('person-marker-selected');
-            });
-
             selectPerson(person);
             selectedPersonMarker = personMarker;
-            document.getElementById('map-overlay').classList.add('darkened');
-            personMarker.getElement().classList.add('person-marker-selected');
-            document.getElementById('info-box').classList.remove('hidden');
         });
     });
 
@@ -242,9 +235,11 @@ function initializeMap() {
         map.on('click', (e) => {
             document.getElementById('map-overlay').classList.remove('darkened');
             document.getElementById('info-box').classList.add('hidden');
-            Object.values(personMarkers).forEach(marker => {
-                marker.getElement().classList.remove('person-marker-selected');
-            });
+            
+            document.querySelectorAll('.person-marker, .poi-marker')
+                .forEach(el => el.classList.remove('marker-selected'));
+
+            selectedPerson = null;
         });
     });
 }
@@ -285,7 +280,7 @@ function movePersonToPOI(marker, POIname) {
     const startLngLat = [start.lng, start.lat];
     const duration = 1500;
     const startTime = performance.now();
-    const waitTime = person.properties.returnTimer || 3000;
+    const waitTime = person.properties.returnTimer || 10000;
 
     function animate(time) {
         const elapsed = time - startTime;
@@ -301,15 +296,16 @@ function movePersonToPOI(marker, POIname) {
         } else {
             // Add person to POI
             const personEl = document.createElement('div');
-            personEl.className = 'poi-person';
+            personEl.className = 'person-marker-small';
+            personEl.setAttribute('data-name', marker.name);
             personEl.style.backgroundImage = `url(${svgCache.get(marker.name)})`;
+            if (selectedPerson = marker.name) {
+                // personEl.classList.add('marker-selected');
+            }
             
             personEl.addEventListener('click', (e) => {
                 e.stopPropagation();
                 selectPerson(person);
-                document.getElementById('map-overlay').classList.add('darkened');
-                document.getElementById('info-box').classList.remove('hidden');
-                personEl.classList.add('person-marker-selected');
             });
 
             POImarker.peopleContainer.appendChild(personEl);
@@ -412,9 +408,6 @@ function moveTrainMarker(marker, route, direction) {
     let hasStoppedAtCurrentStation = false;
     let lastStationCoords = null;
 
-    //TODO Image rotation
-
-
     // Display passengers
     const passengerContainer = document.createElement('div');
     passengerContainer.className = 'passenger-container';
@@ -425,17 +418,16 @@ function moveTrainMarker(marker, route, direction) {
         marker.passengers.forEach(passenger => {
             const icon = document.createElement('img');
             icon.src = svgCache.get(passenger.name) || './img/Hund.svg';
-            icon.className = 'person-marker';
+            icon.className = 'person-marker-small';
+            icon.setAttribute('data-name', passenger.name);
+            if (selectedPerson === passenger.name) {
+                icon.classList.add('marker-selected');
+            }
 
             // This is dupicated code, but it is necessary to add the event listener to the icon
             icon.addEventListener('click', (e) => {
                 e.stopPropagation();
-            
-                // Reset any previously selected markers
-                Object.values(personMarkers).forEach(marker => {
-                    marker.getElement().classList.remove('person-marker-selected');
-                });
-    
+        
                 // Find the person data
                 const person = personsGeoJSON.features.find(p => 
                     p.properties.name === passenger.name
@@ -443,9 +435,6 @@ function moveTrainMarker(marker, route, direction) {
     
                 selectPerson(person);
                 selectedPersonMarker = passenger;
-                document.getElementById('map-overlay').classList.add('darkened');
-                passenger.getElement().classList.add('person-marker-selected');
-                document.getElementById('info-box').classList.remove('hidden');
             });
 
             passengerContainer.appendChild(icon);
@@ -671,7 +660,7 @@ function moveTrainMarker(marker, route, direction) {
                     destinationIndex = direction === 1 ? route.length - 1 : 0;
                     marker.setLngLat(route[currentIndex]);
                     requestAnimationFrame(animate);
-                }, 10000);
+                }, 20000);
             } else {
                 direction *= -1;
                 const temp = startPoint;
@@ -701,7 +690,7 @@ function selectPerson(person) {
     if (!canSelectPerson) {
         return;
     }
-    selectedPerson = person;
+    selectedPerson = person.properties.name;
     selectedPersonMarker = personMarkers[person.properties.name];
 
     // document.getElementById(person.properties.name).classList.add('person-icon-active');
@@ -717,12 +706,13 @@ function selectPerson(person) {
     document.getElementById('map-overlay').classList.add('darkened');
     document.getElementById('info-box').classList.remove('hidden');
 
-    // Update marker selection visual
-    Object.values(personMarkers).forEach(marker => {
-        marker.getElement().classList.remove('person-marker-selected');
-    });
-    personMarkers[person.properties.name].getElement().classList.add('person-marker-selected');
+    // Remove selection from all
+    document.querySelectorAll('.person-marker, .poi-marker')
+        .forEach(el => el.classList.remove('marker-selected'));
 
+    // Add selection to all elements representing this person
+    document.querySelectorAll(`[data-name="${person.properties.name}"]`)
+        .forEach(el => el.classList.add('marker-selected'));
 }
 
 function selectPOI(poi) {
