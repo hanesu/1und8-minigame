@@ -29,7 +29,7 @@
           "destinationStation": "Bf Leeste",
           "homeStation": "Beethovenstraße",
           "startTimer": 6000,
-          "returnTimer": 30000,
+          "returnTimer": 10000,
           "info": "Witwe Dorothea fährt nie allein. Immer hat sie ihren Yorkshire Terrier dabei, egal, wohin es geht. Früher hat ihr Mann sie und die zwei gemeinsamen Töchter mit dem Auto zu jedem gewünschten Ziel gefahren. Nach seinem Tod ist die ehemalige Sekretärin auf die Bahn umgestiegen – mit ihren 75 Jahren möchte sie sich nicht wieder selbst hinters Steuer setzen."
         }
       },
@@ -45,7 +45,7 @@
           "destinationStation": "Bassumer Straße",
           "homeStation": "Dovemoorstraße",
           "startTimer": 0,
-          "returnTimer": 10000,
+          "returnTimer": 20000,
           "info": "Tik Toks und Videos sind ihr größtes Hobby – und ihr Traum. Später will sie Influencerin werden. Reisen, berühmt sein. Jetzt ist aber schon mal gut, dass sie nichtmehr von Mama oder Papa überall hingefahren werden muss. Dafür ist sie echt auch zu alt. Peinlich ist das, wenn sie mit den Freundinnen shoppen will und die Eltern sind immer irgendwie dabei. Ehrlich, geht gar nicht. Da lieber Bahn fahren."
         }
       },
@@ -61,7 +61,7 @@
           "destinationStation": "Bassumer Straße",
           "homeStation": "Stuhrbaum",
           "startTimer": 5000,
-          "returnTimer": 10000,
+          "returnTimer": 20000,
           "info": "Pferde sind ihr Hobby – jetzt sag keiner: Typisch Mädchen. Dass kann Natascha nicht leiden. Reittherapeutin ist ein echter Beruf. Gerade macht sie ein Praktikum auf dem Hof, denkt an ihre Zukunft – und Fin, den findet sie nämlich echt süß. Für ihre Eltern ist sie noch »die Kleine«. Das nervt zwar, dass sie sich Sorgen machen, ist aber okay. Und wenn sie die Bahn nimmt, darf sie jetzt auch mal später heimkommen."
         }
       },
@@ -77,7 +77,7 @@
           "destinationStation": "Bassumer Straße",
           "homeStation": "Hagener Straße",
           "startTimer": 20000,
-          "returnTimer": 10000,
+          "returnTimer": 15000,
           "info": "Fin ist gerade 15 Jahre alt geworden - und hat das gebührend gefeiert. Zusammen mit seinen Freunden ist er unterwegs gewesen bis – naja, länger als eigentlich erlaubt. Aber mit der Bahn war er schnell zuhause. Früher musste er immer rumkutschiert werden - zum Handball-Training nach Stuhr, zu seinen Freunden und so. Jetzt fährt er Bahn und ist völlig unabhängig. Das ist richtig toll!"
         }
       },
@@ -85,27 +85,11 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.812082689140118, 52.99244807193893]
-        },
-        "properties": {
-          "name": "Holger",
-          "destination": "Discgolf Anlage",
-          "destinationStation": "Studtriede",
-          "homeStation": "Bf Leeste",
-          "startTimer": 0,
-          "returnTimer": 10000,
-          "info": "Nach seiner Scheidung steht Holger am Beginn eines neuen Lebensabschnitts: Radfahren, fitter werden, mehr Zeit mit seinem Sohn verbringen und überhaupt bewusster leben. Erster Schritt: Kauf einer Monatskarte für die Bahn. Das sind quasi zwei Fliegen mit einer Klappe: weniger Auto, mehr Bewegung. Sein Motto: Langsam anfangen und erstmal zur Haltestelle gehen."
-        }
-      },
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [8.776701268778547, 53.01316821603115]
+          "coordinates": [8.776601268778547, 53.01326821603115]
         },
         "properties": {
           "name": "Ayla",
-          "destination": "Gelateria La Luna",
+          "destination": "Eiscafe",
           "destinationStation": "Bf Leeste",
           "homeStation": "Brinkum Bahnhofstraße",
           "startTimer": 0,
@@ -117,11 +101,11 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.776630067421488, 53.01275952817889]
+          "coordinates": [8.776030067421488, 53.01275952817889]
         },
         "properties": {
           "name": "Tom",
-          "destination": "Gelateria La Luna",
+          "destination": "Eiscafe",
           "destinationStation": "Bf Leeste",
           "homeStation": "Brinkum Bahnhofstraße",
           "startTimer": 0,
@@ -133,11 +117,11 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.77718683816085, 53.01296877666635]
+          "coordinates": [8.77718683816085, 53.01276877666635]
         },
         "properties": {
           "name": "Amina",
-          "destination": "Gelateria La Luna",
+          "destination": "Eiscafe",
           "destinationStation": "Bf Leeste",
           "homeStation": "Brinkum Bahnhofstraße",
           "startTimer": 0,

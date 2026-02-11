@@ -11,11 +11,11 @@ let peopleAtPOIs = {};
 let POIMarkers = {};
 
 let train1Marker = null;
-let simulationTimeouts = [];
-let train1Interval = null;
+let train2Marker = null;
 
 // Cache for SVG images
 const svgCache = new Map();
+let activePassengers = new Set();
 
 
 document.getElementById('opt-in-button').addEventListener('click', () => {
@@ -37,9 +37,13 @@ function optIn() {
     container: 'map', // container's id or the HTML element to render the map
     style: maptilersdk.MapStyle.STREETS,
     center: [8.768807320860198, 53.01938559330482], // starting position [lng, lat]
-    zoom: 13, // starting zoom  
-    minZoom: 12,
+    zoom: 14, // starting zoom  
+    minZoom: 14,
     maxZoom: 15,
+    maxBounds: [
+        [8.680, 52.97], // Southwest coordinates
+        [8.870, 53.06]  // Northeast coordinates
+    ]
     });
 
     Promise.all([
@@ -58,9 +62,7 @@ function optIn() {
         stationCoordinates = stationsData.features.map(feature => feature.geometry.coordinates);
         stopCoordinates = stationsData.features.filter(feature => feature.properties.isStop).map(feature => feature.geometry.coordinates);
         initializeMap();
-        setTimeout(() => {
-            startSimulation();
-        }, 3000);
+        startSimulation();
     });
 }
 
@@ -78,44 +80,26 @@ function initializeMap() {
         ]
     };
 
-    var train1MarkerEl = document.createElement('div');
-    train1MarkerEl.className = 'train-marker';
-    train1Marker = new maptilersdk.Marker({
-        element: train1MarkerEl,
-        anchor: 'center'
-    })
-        .setLngLat(stationCoordinates[0])
-        .addTo(map);
-    train1Marker.passengers = [];
-
-    var train2MarkerEl = document.createElement('div');
-    train2MarkerEl.className = 'train-marker';
-    train2Marker = new maptilersdk.Marker({
-        element: train2MarkerEl,
-        anchor: 'center'
-    })
-        .setLngLat(stationCoordinates[stationCoordinates.length - 1])
-        .addTo(map);
-    train2Marker.passengers = [];
-
-
-
     POIsGeoJSON.features.forEach(POI => {
         const container = document.createElement('div');
         container.className = 'poi-container';
 
         const el = document.createElement('div');
         el.className = 'poi-marker';
-        el.style.backgroundImage = `url(./img/POI.svg)`;
+        el.style.backgroundImage = `url(${POI.properties.image})`;
 
         const peopleContainer = document.createElement('div');
-        peopleContainer.className = `people-container people-${POI.properties.peoplePosition || 'left'}`;
+        peopleContainer.className = `people-container`;
         container.appendChild(peopleContainer);
         container.appendChild(el);
 
-        const POImarker = new maptilersdk.Marker({element: container})
+        const POImarker = new maptilersdk.Marker({
+            element: container, 
+            anchor: 'center'
+        })
             .setLngLat(POI.geometry.coordinates)
             .addTo(map);
+
 
         POImarker.peopleContainer = peopleContainer;
         POIMarkers[POI.properties.name] = POImarker;
@@ -174,7 +158,7 @@ function initializeMap() {
         personMarker.isReturning = false;
         personMarker.waitingAtPOI = false;
         personMarker.isMoving = false;
-        
+        personMarker.journeyCompleted = false;
 
         personMarker.getElement().addEventListener('click', (e) => {
             e.stopPropagation(); // Prevent map click event from firing
@@ -201,8 +185,18 @@ function initializeMap() {
         stationImage.onload = () => {
             map.addImage('stationIcon', stationImage);
         };
-        // const stationImage = await map.loadImage('./img/station.png');
-        // map.addImage('stationIcon', stationImage.data);
+
+        POIsGeoJSON.features.forEach(POI => {
+            if (!POI.properties.image) {
+                console.warn(`POI ${POI.properties.name} does not have an image defined.`);
+                return;
+            }
+            const poiImage = new Image();
+            poiImage.src = POI.properties.image;
+            poiImage.onload = () => {
+                map.addImage(POI.properties.name, poiImage);
+            };
+        });
 
         map.addLayer({
             id: 'route',
@@ -236,7 +230,7 @@ function initializeMap() {
             document.getElementById('map-overlay').classList.remove('darkened');
             document.getElementById('info-box').classList.add('hidden');
             
-            document.querySelectorAll('.person-marker, .poi-marker')
+            document.querySelectorAll('.person-marker, .person-marker-small, .poi-marker')
                 .forEach(el => el.classList.remove('marker-selected'));
 
             selectedPerson = null;
@@ -246,12 +240,21 @@ function initializeMap() {
 
 
 function movePersonToStation(marker, stationName) {
+    // console.log(`Moving ${marker.name} to station: ${stationName}`);
     const station = findStationByName(stationName).geometry.coordinates;
     const start = marker.getLngLat();
     const startLngLat = [start.lng, start.lat];
     const duration = 1500;
     const startTime = performance.now();
 
+    const currentPOI = Object.keys(peopleAtPOIs).find(poiName => 
+        peopleAtPOIs[poiName].includes(marker)
+    );
+    
+    if (currentPOI) {
+        removePersonFromPOI(marker, currentPOI);
+    }
+    
     function animate(time) {
         const elapsed = time - startTime;
         const t = Math.min(elapsed / duration, 1);
@@ -280,7 +283,28 @@ function movePersonToPOI(marker, POIname) {
     const startLngLat = [start.lng, start.lat];
     const duration = 1500;
     const startTime = performance.now();
-    const waitTime = person.properties.returnTimer || 10000;
+
+    if (!peopleAtPOIs[POIname]) {
+        peopleAtPOIs[POIname] = [];
+    }
+    peopleAtPOIs[POIname].push(marker);
+
+    marker.waitingAtPOI = true;
+
+    function updatePOIPositions() {
+        const markers = peopleAtPOIs[POIname];
+        const spacing = 0.002; // Spacing between markers
+        const totalWidth = ((markers.length - 1) * spacing);
+        
+        markers.forEach((m, index) => {
+            const offsetX = (index * spacing) - (totalWidth / 2);
+            const newPos = [
+                POIcoords[0] + offsetX,
+                POIcoords[1]
+            ];
+            m.setLngLat(newPos);
+        });
+    }
 
     function animate(time) {
         const elapsed = time - startTime;
@@ -294,36 +318,44 @@ function movePersonToPOI(marker, POIname) {
         if (t < 1) {
             requestAnimationFrame(animate);
         } else {
-            // Add person to POI
-            const personEl = document.createElement('div');
-            personEl.className = 'person-marker-small';
-            personEl.setAttribute('data-name', marker.name);
-            personEl.style.backgroundImage = `url(${svgCache.get(marker.name)})`;
-            if (selectedPerson = marker.name) {
-                // personEl.classList.add('marker-selected');
-            }
+            updatePOIPositions();
+
+            const person = personsGeoJSON.features.find(p => p.properties.name === marker.name);
+            const waitTime = person.properties.returnTimer || 10000; // Default 10s if not specified
             
-            personEl.addEventListener('click', (e) => {
-                e.stopPropagation();
-                selectPerson(person);
-            });
-
-            POImarker.peopleContainer.appendChild(personEl);
-            marker.getElement().style.display = 'none';
-            marker.waitingAtPOI = true;
-
-            // Return timer
             setTimeout(() => {
-                personEl.remove();
-                marker.waitingAtPOI = false;
                 marker.isReturning = true;
                 marker.isAvailable = true;
+                marker.waitingAtPOI = false;
                 marker.currentDestination = person.properties.homeStation;
-                marker.getElement().style.display = 'block';
+                // console.log(`${marker.name}'s timer of ${waitTime}ms finished`);
             }, waitTime);
         }
     }
     requestAnimationFrame(animate);
+}
+
+function removePersonFromPOI(marker, POIname) {
+    if (peopleAtPOIs[POIname]) {
+        const index = peopleAtPOIs[POIname].indexOf(marker);
+        if (index > -1) {
+            peopleAtPOIs[POIname].splice(index, 1);
+
+            const markers = peopleAtPOIs[POIname];
+            const POIcoords = findPOIByName(POIname).geometry.coordinates;
+            const spacing = 0.0002;
+            const totalWidth = ((markers.length - 1) * spacing);
+            
+            markers.forEach((m, i) => {
+                const offsetX = (i * spacing) - (totalWidth / 2);
+                const newPos = [
+                    POIcoords[0] + offsetX,
+                    POIcoords[1]
+                ];
+                m.setLngLat(newPos);
+            });
+        }
+    }
 }
 
 function movePersonToHome(marker, coords) {
@@ -351,23 +383,30 @@ function movePersonToHome(marker, coords) {
         if (t < 1) {
             requestAnimationFrame(animate);
         } else {
+            marker.isReturning = false;
+            marker.journeyCompleted = true;
+            marker.isMoving = false;
+            marker.isAvailable = false;
+            marker.waitingAtPOI = false;
+
             marker.setPopup(popup);
             marker.togglePopup();
-            marker.isReturning = false;
-            marker.isAvailable = true;
-            marker.waitingAtPOI = false;
-            marker.isMoving = false;
-            marker.currentDestination = marker.destinationStation;
 
             // find original person data to reset destination
             const person = personsGeoJSON.features.find(p => 
                 p.properties.name === marker.name
             );
-            marker.destinationStation = person.properties.destinationStation;
-            
+            // marker.destinationStation = person.properties.destinationStation;
+
             setTimeout(() => {
                 popup.remove();
             }, 1500);
+
+            if (areAllPeopleHome()) {
+                console.log('All people are home, resetting simulation');
+                resetSimulation();
+                return;
+            }
         }
     }
     requestAnimationFrame(animate);
@@ -385,7 +424,7 @@ function findPOIByName(POIname) {
     );
 }
 
-function isNearLocation(position1, position2, tolerance = 0.0001) {
+function isNearLocation(position1, position2, tolerance = 0.0001) { 
     return Math.abs(position1.lng - position2[0]) < tolerance && 
            Math.abs(position1.lat - position2[1]) < tolerance;
 }
@@ -442,18 +481,14 @@ function moveTrainMarker(marker, route, direction) {
     }
 
     function handlePickup(personMarker, currentPos, currentIndex) {
-        // console.log('Trying to pickup:', {
-        //     name: personMarker.name,
-        //     isAvailable: personMarker.isAvailable,
-        //     isReturning: personMarker.isReturning,
-        //     destinationStation: personMarker.destinationStation,
-        //     currentPos: currentPos,
-        //     personPos: personMarker.getLngLat()
-        // });
+
+        if (activePassengers.has(personMarker.name)) {
+            return false;
+        }
+
         const personLngLat = personMarker.getLngLat();
         const distance = calculateDistance(currentPos, [personLngLat.lng, personLngLat.lat]);
         
-
         const destinationStation = findStationByName(personMarker.currentDestination);
         if (!destinationStation) return;
 
@@ -470,13 +505,15 @@ function moveTrainMarker(marker, route, direction) {
             marker.passengers.push(personMarker);
             personMarker.isAvailable = false;
             personMarker.getElement().style.display = 'none';
+            activePassengers.add(personMarker.name);
             updatePassengerIcons();
             return true;
         }
         return false;
     }
 
-    function handleDropoff(personMarker, currentPos, dropoffCount = 0) {
+    function handleDropoff(personMarker, currentPos) {
+        // console.log(`Checking dropoff for ${personMarker.name}: isAvailable: ${personMarker.isAvailable}, currentDestination: ${personMarker.currentDestination}, isReturning: ${personMarker.isReturning}`);
         if (personMarker.isAvailable) return false;
 
         const destinationStation = findStationByName(personMarker.currentDestination);
@@ -488,6 +525,9 @@ function moveTrainMarker(marker, route, direction) {
 
             personMarker.setLngLat(destinationCoords);
             personMarker.getElement().style.display = 'block';
+            activePassengers.delete(personMarker.name);
+
+            //console.log(`${personMarker.name} | isReturning: ${personMarker.isReturning} | isAvailable: ${personMarker.isAvailable} | destination: ${personMarker.currentDestination}`);
 
             if ( personMarker.isReturning ) {
                 movePersonToHome(personMarker, personMarker.home);
@@ -499,7 +539,8 @@ function moveTrainMarker(marker, route, direction) {
         }
         return false;
     }
-
+    
+    // returns true if at destinationStation of passenger or if there are viable passengers nearby
     function shouldStopAtLocation(currentPos, currentIndex) {
         // Check if there are any viable passengers nearby
         const hasViablePassenger = Object.values(personMarkers).some(personMarker => {
@@ -511,6 +552,7 @@ function moveTrainMarker(marker, route, direction) {
     
             // Check if person's destination is along train's route
             const destinationStation = findStationByName(personMarker.currentDestination);
+            // console.log(`Destination for ${personMarker.name}: ${personMarker.currentDestination}`);
             if (!destinationStation) return false;
     
             const destinationCoords = destinationStation.geometry.coordinates;
@@ -536,19 +578,22 @@ function moveTrainMarker(marker, route, direction) {
 
     function checkForPersonMovement(currentPos) {
         Object.values(personMarkers).forEach(personMarker => {
-            if (!personMarker.isMoving && personMarker.isAvailable && !personMarker.waitingAtPOI) {
+            if (!personMarker.isMoving && !personMarker.waitingAtPOI && !personMarker.journeyCompleted) {
+                // targetStation is the station they walk to
                 const targetStation = personMarker.isReturning ? 
                     personMarker.destinationStation : 
-                    personMarker.homeStation;
-                    
-                const triggerStation = findStationBeforeTarget(targetStation, direction, 3);
+                    personMarker.homeStation; 
+                
+                const triggerStation = findStationBeforeTarget(personMarker, targetStation, direction, 3);
                 if (!triggerStation) return;
                 
                 const triggerStationData = findStationByName(triggerStation);
                 if (!triggerStationData) return;
                 
+                
                 if (isNearLocation(currentPos, triggerStationData.geometry.coordinates)) {
                     personMarker.isMoving = true;
+                    console.log(personMarker.name, personMarker.currentDestination);
                     movePersonToStation(personMarker, targetStation);
                 }
             }
@@ -642,16 +687,7 @@ function moveTrainMarker(marker, route, direction) {
 
             requestAnimationFrame(animate);
         } else {
-            // Reached end point, flip direction and restart
-            // if train at Roland-Center, wait 10 seconds before flipping direction
-            const currentPos = marker.getLngLat();
-            const rolandCenter = findStationByName('Roland-Center');
-
-            if (isNearLocation(currentPos, rolandCenter.geometry.coordinates)) {
-                marker.getElement().classList.add('hidden');
-
-                setTimeout(() => {
-                    marker.getElement().classList.remove('hidden');
+            setTimeout(() => {
                     direction *= -1;
                     const temp = startPoint;
                     startPoint = endPoint;
@@ -660,19 +696,7 @@ function moveTrainMarker(marker, route, direction) {
                     destinationIndex = direction === 1 ? route.length - 1 : 0;
                     marker.setLngLat(route[currentIndex]);
                     requestAnimationFrame(animate);
-                }, 20000);
-            } else {
-                direction *= -1;
-                const temp = startPoint;
-                startPoint = endPoint;
-                endPoint = temp;
-                
-                currentIndex = direction === 1 ? route.indexOf(startPoint) : route.length - 1;
-                destinationIndex = direction === 1 ? route.length - 1 : 0;
-
-                marker.setLngLat(route[currentIndex]);
-                requestAnimationFrame(animate);
-            }
+                }, 10000);
         }
     }
 
@@ -707,7 +731,7 @@ function selectPerson(person) {
     document.getElementById('info-box').classList.remove('hidden');
 
     // Remove selection from all
-    document.querySelectorAll('.person-marker, .poi-marker')
+    document.querySelectorAll('.person-marker, .person-marker-small, .poi-marker')
         .forEach(el => el.classList.remove('marker-selected'));
 
     // Add selection to all elements representing this person
@@ -724,44 +748,96 @@ function selectPOI(poi) {
 
 }
 
-function findStationBeforeTarget(targetStation, direction, stationsAhead = 3) {
+function findStationBeforeTarget(personMarker, targetStation, direction, stationsAhead = 3) {
     const stationsList = stationsGeoJSON.features.map(station => station.properties.name);
     const targetIndex = stationsList.indexOf(targetStation);
     if (targetIndex === -1) return null;
-    
+
+    const currentDestinationIndex = stationsList.indexOf(personMarker.currentDestination);
+    const neededDirection = targetIndex > currentDestinationIndex ? -1 : 1;
+
+    // If targetStation is within stationsAhead of start or end, use opposite direction and return targetStation
+    if (targetIndex < stationsAhead || targetIndex > stationsList.length - 1 - stationsAhead) {
+        if (direction === neededDirection) return null;
+        return stationsList[targetIndex];
+    }
+
+    if (neededDirection !== direction) return null;
+
     const lookAheadIndex = direction === 1 ? 
         targetIndex - stationsAhead : 
         targetIndex + stationsAhead;
-        
+
     if (lookAheadIndex >= 0 && lookAheadIndex < stationsList.length) {
         return stationsList[lookAheadIndex];
     }
     return null;
 }
 
-function findNearestStation(position) {
-    let nearestStation = null;
-    let shortestDistance = Infinity;
-    
-    stationsGeoJSON.features.forEach(station => {
-        const distance = calculateDistance(position, station.geometry.coordinates);
-        if (distance < shortestDistance) {
-            shortestDistance = distance;
-            nearestStation = station.properties.name;
-        }
+function areAllPeopleHome() {
+    console.log('Checking if all people are home...');
+    return Object.values(personMarkers).every(marker => {
+        const isAtHome = isNearLocation(
+            marker.getLngLat(), 
+            marker.home,
+            0.0001
+        );
+        console.log(marker.journeyCompleted);
+        const isReadyForNewJourney = !marker.isReturning && !marker.waitingAtPOI;
+        return isAtHome && isReadyForNewJourney;
     });
-    
-    return nearestStation;
 }
 
-
 function startSimulation() {
-    // Clear any existing timeouts
-    simulationTimeouts.forEach(timeout => clearTimeout(timeout));
-    simulationTimeouts = [];
 
-    // Start train
-    moveTrainMarker(train1Marker, routeCoordinates, 1);
-    moveTrainMarker(train2Marker, routeCoordinates, -1);
+    activePassengers.clear();
+    Object.values(personMarkers).forEach(marker => {
+        marker.isAvailable = true;
+        marker.isReturning = false;
+        marker.waitingAtPOI = false;
+        marker.isMoving = false;
+        marker.getElement().style.display = 'block';
+        marker.setLngLat(marker.home);
+        marker.currentDestination = marker.destinationStation;
+    });
 
+    if (train1Marker && train2Marker) {
+        train1Marker.remove();
+        train2Marker.remove();
+    }
+
+    var train1MarkerEl = document.createElement('div');
+    train1MarkerEl.className = 'train-marker';
+    train1Marker = new maptilersdk.Marker({
+        element: train1MarkerEl,
+        anchor: 'center'
+    })
+        .setLngLat(stationCoordinates[0])
+        .addTo(map);
+    train1Marker.passengers = [];
+    train1Marker.direction = 1;
+
+    var train2MarkerEl = document.createElement('div');
+    train2MarkerEl.className = 'train-marker';
+    train2Marker = new maptilersdk.Marker({
+        element: train2MarkerEl,
+        anchor: 'center'
+    })
+        .setLngLat(stationCoordinates[stationCoordinates.length - 1])
+        .addTo(map);
+    train2Marker.passengers = [];
+    train2Marker.direction = -1;
+
+    setTimeout(() => {
+        moveTrainMarker(train1Marker, routeCoordinates, 1);
+        moveTrainMarker(train2Marker, routeCoordinates, -1);
+    }, 1000);
+
+}
+
+function resetSimulation() {
+    startSimulation();
+    Object.values(personMarkers).forEach(marker => {
+        marker.journeyCompleted = false;
+    });
 }

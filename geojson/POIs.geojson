@@ -5,23 +5,12 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.729111805193584, 53.03826596766262]
-        },
-        "properties": {
-          "name": "Friedhof Huchting",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-        }
-      },
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [8.751063349933256, 53.02689850158786]
+          "coordinates": [8.752063349933256, 53.02789850158786]
         },
         "properties": {
           "name": "Rathaus Stuhr",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/Rathaus Stuhr.svg",
+          "image": "./img/poi/RathausStuhr.svg",
           "peoplePosition": "right"
         }
       },
@@ -29,12 +18,12 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.818663148468213, 52.992340621645305]
+          "coordinates": [8.818663148468213, 52.991340621645305]
         },
         "properties": {
           "name": "KGS-Leeste",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/KGS-Leeste.svg"
+          "image": "./img/poi/KGS-Leeste.svg"
         }
       },
       {
@@ -46,19 +35,19 @@
         "properties": {
           "name": "KGS Stuhr-Brinkum",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/KGS StuhrBrinkum.svg"
+          "image": "./img/poi/KGS-StuhrBrinkum.svg"
         }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.816366153977626, 52.987743571242554]
+          "coordinates": [8.816366153977626, 52.987983571242554]
         },
         "properties": {
           "name": "Seniorenzentrum Weyhe",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/Seniorenzentrum Weyhe.svg"
+          "image": "./img/poi/SeniorenzentrumWeyhe.svg"
         }
       },
       {
@@ -68,33 +57,33 @@
           "coordinates": [8.81647045531071, 52.99023471746573]
         },
         "properties": {
-          "name": "Gelateria La Luna",
+          "name": "Eiscafe",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/Gelateria La Luna.svg"
+          "image": "./img/poi/Eiscafe.svg"
         }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.816322079915443, 52.98745860353071]
+          "coordinates": [8.816322079915443, 52.98545860353071]
         },
         "properties": {
           "name": "Kulturscheune Weyhe",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/KulturscheuneBibliothek.svg"
+          "image": "./img/poi/KulturscheuneBibliothek.svg"
         }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.82154609491352, 52.994023011664936]
+          "coordinates": [8.82254609491352, 52.993303011664936]
         },
         "properties": {
           "name": "Famila",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/Famila.svg",
+          "image": "./img/poi/Famila.svg",
           "peoplePosition": "right"
         }
       },
@@ -102,24 +91,24 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.726978282218363, 53.03505349027752]
+          "coordinates": [8.728978282218363, 53.03505349027752]
         },
         "properties": {
           "name": "Hochhaus Moordeich",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/HochhausMoordeich.svg"
+          "image": "./img/poi/HochhausMoordeich.svg"
         }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.782630905044622, 53.005951629115316]
+          "coordinates": [8.779230905044622, 53.007851629115316]
         },
         "properties": {
           "name": "Discgolf Anlage",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/Discgolfanlage.svg",
+          "image": "./img/poi/Discgolfanlage.svg",
           "peoplePosition": "right"
         }
       },
@@ -132,19 +121,31 @@
         "properties": {
           "name": "Sportanlage Moordeich",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/Sportanlage-Moordeich.svg"
+          "image": "./img/poi/Sportanlage-Moordeich.svg"
         }
       },
       {
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.818903587848316, 52.9946918308363]
+          "coordinates": [8.818903587848316, 52.9956918308363]
         },
         "properties": {
           "name": "Bahnhof Leeste",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "/img/poi/Bahnhof Leeste.svg"
+          "image": "./img/poi/BahnhofLeeste.svg"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.729365820937085, 53.0373177371783]
+        },
+        "properties": {
+          "name": "Friedhof Huchting",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "./img/poi/FriedhofHuchting.svg"
         }
       }
     ]

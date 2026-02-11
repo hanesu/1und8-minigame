@@ -1,0 +1,288 @@
+#map-container {
+    position: relative;
+}
+
+#map {
+    width: 100rem !important;
+    height: 50rem;
+    position: relative !important;
+}
+
+#map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0);
+    pointer-events: none;
+    z-index: 1;
+    transition: background-color 0.5s ease;
+}
+
+#map-overlay.darkened {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#info-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+
+    width: 30rem;
+    max-height: 100%;
+    top: 1rem;
+    right: 4rem;
+    background-color: white;
+    opacity: 1;
+    z-index: 10;
+    position: absolute;
+    border-radius: 15px;
+
+    padding-left: 3rem;
+    padding-right: 3rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    #info-header {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 2rem;
+        color: var(--green);
+
+        .person-icon {
+            width: 5rem;
+            height: 5rem;
+        }
+
+        #info-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        #info-image {
+            height: 7rem;
+            border-radius: 100%;
+            background-color: #EEEEEE;
+        }
+
+        p {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+        }
+
+        .info-stations {
+            position: relative;
+            height: 1.5rem;
+            margin-right: 10px;
+        }
+    }
+
+    #info-text {
+        margin: 0;
+        flex-grow: 1;
+    }
+    
+    #info-button-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    button {
+        background-color: var(--green);
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        font-size: 1rem;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    #poi-image {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+    
+}
+
+.person-marker {
+    display: block;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #eeeeee;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+}
+.person-marker:hover {
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.person-marker-small {
+    display: block;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: #eeeeee;
+    z-index: 2;
+}
+.person-marker-small:hover {
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.marker-selected {
+    filter: brightness(100%) drop-shadow(0 0 8px gold);
+    z-index: 9;
+}
+
+.poi-marker {
+    --poi-width: 300px;
+    --poi-height: 100px;
+
+    display: block;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 300px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    position: absolute;
+    left: calc(var(--poi-width) / -2);
+    top: calc(var(--poi-height) / -2);
+}
+.poi-marker:hover {
+    cursor: pointer;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5))
+    brightness(1.2);
+}
+
+.train-marker {
+    background-image: url("./img/Bahn.svg");
+    display: block;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 0;
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    transform-origin: center;
+    transform: scaleX(-1);
+    z-index: 2;
+}
+
+.destination-popup {
+    font-size: 20px;
+}
+
+.passenger-container {
+    position: absolute;
+    display: flex;
+    gap: 5px;
+    bottom: 50px;  /* Position above the train marker */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px;
+    border-radius: 10px;
+    z-index: 2;
+}
+
+
+#opt-in-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(236, 236, 236);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease-in-out;
+}
+#opt-in-overlay.invisible {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.opt-in-content {
+    text-align: center;
+    padding: 2rem;
+    width: 50%;
+}
+
+#opt-in-button {
+    background-color: var(--green);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 0px;
+}
+
+.poi-container {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+}
+
+.people-container {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    margin-top: 60px;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+.poi-person {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.2s;
+    z-index: 2;
+}
+.poi-person:hover {
+    transform: scale(1.2);
+    cursor: pointer;
+}

@@ -1,0 +1,14 @@
+{
+  "name": "poi-tiles",
+  "version": "1.1.0",
+  "description": "",
+  "attribution": "<a href=\"https://www.maptiler.com/engine/\">Rendered with MapTiler Engine</a>, non-commercial use only",
+  "type": "baselayer",
+  "format": "pbf",
+  "minzoom": "10",
+  "maxzoom": "14",
+  "scale": "1.000000",
+  "bounds": [8.72697828, 52.98745860, 8.82154609, 53.03826597],
+  "profile": "mercator",
+  "vector_layers": [{"id":"POIs","description":"","minzoom":10, "maxzoom":14,"fields":{"name":"String","info":"String","image":"String","peoplePosition":"String"}}]
+}
