@@ -1,6 +1,30 @@
 import { MAP_CONFIG, svgCache } from "./config.js";
 import { findStationByName, findPOIByName, isNearLocation, calculateDistance } from "./utils.js";
 
+export class Station {
+    static markers = {};
+
+    constructor(stationData, map, onSelect) {
+        this.stationData = stationData;
+        this.map = map;
+        this.onSelect = onSelect;
+
+        const el = document.createElement('div');
+        el.className = 'station-marker';
+
+        this.marker = new maptilersdk.Marker({element: el, anchor: 'bottom'})
+            .setLngLat(stationData.geometry.coordinates)
+            .addTo(map);
+
+        this.marker.getElement().addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            this.onSelect(stationData);
+        });
+        
+        Station.markers[stationData.properties.name] = this.marker;
+    }
+}
+
 export class Person {
     static markers = {};
 
@@ -180,9 +204,6 @@ export class POI {
             });
 
             this.onSelect(poiData);
-            document.getElementById('map-overlay').classList.add('darkened');
-            document.getElementById('info-box').classList.remove('hidden');
-            selectedPerson = null;
         });
     }
 

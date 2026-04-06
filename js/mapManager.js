@@ -1,6 +1,6 @@
 import { MAP_CONFIG } from "./config.js";
 import { DataLoader } from "./dataLoader.js";
-import { Person, POI, Train } from "./markers.js";
+import { Person, POI, Train, Station } from "./markers.js";
 
 export class MapManager {
     constructor(map) {
@@ -12,14 +12,14 @@ export class MapManager {
 
         this.canSelectPerson = true;
         this.selectedPerson = null;
-        this.selectedPersonMarker = null;
+        this.selectedMarker = null;
     }
 
     selectPerson = (person) => {
         if (!this.canSelectPerson) return;
 
         this.selectedPerson = person.properties.name;
-        this.selectedPersonMarker = Person.markers[person.properties.name];
+        this.selectedMarker = Person.markers[person.properties.name];
 
         document.getElementById('info-image').innerHTML = `<img id="info-image" src="./img/${person.properties.name}.svg" class="info-image">`;
         document.getElementById('info-image').classList.remove('hidden');
@@ -29,15 +29,41 @@ export class MapManager {
         document.getElementById('info-destination').innerHTML = person.properties.destinationStation;
         document.getElementById('info-text').innerHTML = person.properties.info;
         document.getElementById('poi-image-container').innerHTML = '';
-
         document.getElementById('map-overlay').classList.add('darkened');
         document.getElementById('info-box').classList.remove('hidden');
+
+        document.querySelectorAll('.person-marker, .person-marker-small, .poi-container, .station-marker')
+            .forEach(el => el.classList.remove('marker-selected'));
+        this.selectedMarker.getElement().classList.add('marker-selected');
     }
     selectPOI = (poi) => {
+        this.selectedMarker = POI.markers[poi.properties.name];
+
         document.getElementById('info-title').innerHTML = poi.properties.name;
         document.getElementById('info-image').classList.add('hidden');
         document.getElementById('info-ul').classList.add('hidden');
         document.getElementById('info-text').innerHTML = '';
+        document.getElementById('map-overlay').classList.add('darkened');
+        document.getElementById('info-box').classList.remove('hidden');
+
+        document.querySelectorAll('.person-marker, .person-marker-small, .poi-container, .station-marker')
+            .forEach(el => el.classList.remove('marker-selected'));
+        this.selectedMarker.getElement().classList.add('marker-selected');
+        
+    }
+    selectStation = (station) => {
+        this.selectedMarker = Station.markers[station.properties.name];
+
+        document.getElementById('info-title').innerHTML = station.properties.name;
+        document.getElementById('info-image').classList.add('hidden');
+        document.getElementById('info-ul').classList.add('hidden');
+        document.getElementById('info-text').innerHTML = '';
+        document.getElementById('map-overlay').classList.add('darkened');
+        document.getElementById('info-box').classList.remove('hidden');
+
+        document.querySelectorAll('.person-marker, .person-marker-small, .poi-container, .station-marker')
+            .forEach(el => el.classList.remove('marker-selected'));
+        this.selectedMarker.getElement().classList.add('marker-selected');
     }
 
     async initMap() {
@@ -52,6 +78,11 @@ export class MapManager {
             container: 'map',
             style: maptilersdk.MapStyle.STREETS,
             ...MAP_CONFIG
+        });
+
+        // CREATE STATIONS
+        this.stationData.features.forEach(station => {
+            new Station(station, this.map, this.selectStation);
         });
 
         // CREATE PEOPLE
@@ -138,11 +169,19 @@ export class MapManager {
                 document.getElementById('map-overlay').classList.remove('darkened');
                 document.getElementById('info-box').classList.add('hidden');
                 
-                document.querySelectorAll('.person-marker, .person-marker-small, .poi-marker')
+                document.querySelectorAll('.person-marker, .person-marker-small, .poi-container, .station-marker')
                     .forEach(el => el.classList.remove('marker-selected'));
 
                 this.selectedPerson = null;
             });
+
+            this.map.on('zoom', () => {
+                const zoom = this.map.getZoom();
+                const scale = Math.pow(2, zoom - 14); // adjust base zoom
+                document.querySelectorAll('.poi-marker').forEach(el => {
+                    el.style.transform = `scale(${scale})`;
+                });
+                });
         });
     }
 

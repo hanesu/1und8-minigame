@@ -6,6 +6,9 @@
     width: 100rem !important;
     height: 50rem;
     position: relative !important;
+
+    --marker-small: 40px;
+    --marker-large: 50px;
 }
 
 #map-overlay {
@@ -16,7 +19,7 @@
     bottom: 0;
     background: rgba(0, 0, 0, 0);
     pointer-events: none;
-    z-index: 1;
+    z-index: 8;
     transition: background-color 0.5s ease;
 }
 
@@ -123,19 +126,37 @@
     
 }
 
+.station-marker {
+    background-image: url("./img/Haltestelle.svg");
+    display: block;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: var(--marker-small);
+    height: var(--marker-small);
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 2;
+}
+.station-marker:hover {
+    cursor: pointer;
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+}
+
 .person-marker {
     display: block;
     border: none;
     border-radius: 50%;
     cursor: pointer;
     padding: 0;
-    width: 50px;
-    height: 50px;
+    width: var(--marker-large);
+    height: var(--marker-large);
     background-size: contain;
     background-repeat: no-repeat;
     background-color: #eeeeee;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     z-index: 3;
+    transition: box-shadow 0.2s ease;
 }
 .person-marker:hover {
     cursor: pointer;
@@ -148,12 +169,12 @@
     border-radius: 50%;
     cursor: pointer;
     padding: 0;
-    width: 40px;
-    height: 40px;
+    width: var(--marker-small);
+    height: var(--marker-small);
     background-size: contain;
     background-repeat: no-repeat;
     background-color: #eeeeee;
-    z-index: 2;
+    z-index: 3;
 }
 .person-marker-small:hover {
     cursor: pointer;
@@ -161,7 +182,7 @@
 }
 
 .marker-selected {
-    filter: brightness(100%) drop-shadow(0 0 8px gold);
+    filter: brightness(100%);
     z-index: 9;
 }
 
@@ -178,15 +199,17 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    z-index: 1;
 
     position: absolute;
     left: calc(var(--poi-width) / -2);
     top: calc(var(--poi-height) / -2);
+    /* transition: transform 0.2s ease, filter 0.2s ease; */
 }
 .poi-marker:hover {
     cursor: pointer;
-    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5))
-    brightness(1.2);
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+    transform: scale(1.1);
 }
 
 .train-marker {
@@ -196,8 +219,8 @@
     border-radius: 50%;
     cursor: pointer;
     padding: 0;
-    width: 50px;
-    height: 50px;
+    width: var(--marker-large);
+    height: var(--marker-large);
     background-size: contain;
     background-repeat: no-repeat;
     transform-origin: center;
@@ -279,8 +302,8 @@
     border-radius: 50%;
     cursor: pointer;
     padding: 0;
-    width: 50px;
-    height: 50px;
+    width: var(--marker-large);
+    height: var(--marker-large);
     background-size: contain;
     background-repeat: no-repeat;
     background-color: #eeeeee;

@@ -64,3 +64,4 @@ Trains nicht überlappen/nebeneinander fahren lassen
 - resetSimulation bzw areAllPeopleHome in moveToHome
 - moveAlongRoute scheint noch alten Code zu haben
 - trains erschaffen in mapManager
+- feedback gleichbleibende POIs
