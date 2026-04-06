@@ -30,7 +30,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.777970793215495, 53.00533854868079]
+          "coordinates": [8.777970793215495, 53.00433854868079]
         },
         "properties": {
           "name": "KGS Stuhr-Brinkum",
@@ -146,6 +146,18 @@
           "name": "Friedhof Huchting",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
           "image": "./img/poi/FriedhofHuchting.svg"
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.72078930167309, 53.023839783316376]
+        },
+        "properties": {
+          "name": "Industriegebiet???",
+          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "image": "./img/poi/Lagerhalle.svg"
         }
       }
     ]

@@ -69,16 +69,16 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.83382218013945, 52.997804171325136]
+          "coordinates": [8.81804923655388, 52.999040026304975]
         },
         "properties": {
           "name": "Finn",
           "destination": "KGS Stuhr-Brinkum",
           "destinationStation": "Bassumer Straße",
-          "homeStation": "Hagener Straße",
+          "homeStation": "Bf Leeste",
           "startTimer": 20000,
           "returnTimer": 15000,
-          "info": "Fin ist gerade 15 Jahre alt geworden - und hat das gebührend gefeiert. Zusammen mit seinen Freunden ist er unterwegs gewesen bis – naja, länger als eigentlich erlaubt. Aber mit der Bahn war er schnell zuhause. Früher musste er immer rumkutschiert werden - zum Handball-Training nach Stuhr, zu seinen Freunden und so. Jetzt fährt er Bahn und ist völlig unabhängig. Das ist richtig toll!"
+          "info": "Finn ist gerade 15 Jahre alt geworden - und hat das gebührend gefeiert. Zusammen mit seinen Freunden ist er unterwegs gewesen bis – naja, länger als eigentlich erlaubt. Aber mit der Bahn war er schnell zuhause. Früher musste er immer rumkutschiert werden - zum Handball-Training nach Stuhr, zu seinen Freunden und so. Jetzt fährt er Bahn und ist völlig unabhängig. Das ist richtig toll!"
         }
       },
       {
@@ -127,6 +127,54 @@
           "startTimer": 0,
           "returnTimer": 10000,
           "info": "»Sticht der?«, fragt Amina und guckt den zwischen den Sitzen stehenden Kaktus neugierig an. Zusammen mit ihren Eltern Tom und Ayla macht die Fünfjährige einen Ausflug. Die Bahn ist ein abenteuerlicher Ort, an dem sich Erstaunliches beobachtenl ässt. Und das Beste: Sie hält fast direkt im Paradies – das Eis jedenfalls kann man beim Aussteigen schon riechen. Da ist Amira sich ganz sicher."
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.81176369157591, 52.992949781447265]
+        },
+        "properties": {
+          "name": "Holger",
+          "destination": "Discgolf Anlage",
+          "destinationStation": "Bassumer Straße",
+          "homeStation": "Bf Leeste",
+          "startTimer": 0,
+          "returnTimer": 10000,
+          "info": ""
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.749734377580126, 53.02322659461627]
+        },
+        "properties": {
+          "name": "Lukas",
+          "destination": "Discgolf Anlage",
+          "destinationStation": "Bassumer Straße",
+          "homeStation": "Bf Stuhr",
+          "startTimer": 0,
+          "returnTimer": 10000,
+          "info": ""
+        }
+      },
+      {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [8.749734377580126, 53.02322659461627]
+        },
+        "properties": {
+          "name": "Mike",
+          "destination": "Discgolf Anlage",
+          "destinationStation": "Bassumer Straße",
+          "homeStation": "Bf Stuhr",
+          "startTimer": 0,
+          "returnTimer": 10000,
+          "info": ""
         }
       }
     ]

@@ -38,7 +38,7 @@ function optIn() {
     style: maptilersdk.MapStyle.STREETS,
     center: [8.768807320860198, 53.01938559330482], // starting position [lng, lat]
     zoom: 14, // starting zoom  
-    minZoom: 14,
+    minZoom: 12,
     maxZoom: 15,
     maxBounds: [
         [8.680, 52.97], // Southwest coordinates
@@ -47,10 +47,10 @@ function optIn() {
     });
 
     Promise.all([
-        fetch('/geojson/stations.geojson').then(response => response.json()),
-        fetch('/geojson/POIs.geojson').then(response => response.json()),
-        fetch('/geojson/persons.geojson').then(response => response.json()),
-        fetch('/geojson/route8.geojson').then(response => response.json())
+        fetch('geojson/stations.geojson').then(response => response.json()),
+        fetch('geojson/POIs.geojson').then(response => response.json()),
+        fetch('geojson/persons.geojson').then(response => response.json()),
+        fetch('geojson/route8.geojson').then(response => response.json())
     ]).then(([stationsData, POIsData, personsData, route8Data]) => {
         stationsGeoJSON = stationsData;
         POIsGeoJSON = POIsData;
@@ -290,7 +290,7 @@ function movePersonToPOI(marker, POIname) {
     peopleAtPOIs[POIname].push(marker);
 
     marker.waitingAtPOI = true;
-
+    /*
     function updatePOIPositions() {
         const markers = peopleAtPOIs[POIname];
         const spacing = 0.002; // Spacing between markers
@@ -305,7 +305,7 @@ function movePersonToPOI(marker, POIname) {
             m.setLngLat(newPos);
         });
     }
-
+    */
     function animate(time) {
         const elapsed = time - startTime;
         const t = Math.min(elapsed / duration, 1);
@@ -318,10 +318,13 @@ function movePersonToPOI(marker, POIname) {
         if (t < 1) {
             requestAnimationFrame(animate);
         } else {
-            updatePOIPositions();
+            // updatePOIPositions();
 
             const person = personsGeoJSON.features.find(p => p.properties.name === marker.name);
             const waitTime = person.properties.returnTimer || 10000; // Default 10s if not specified
+
+            marker.getElement().style.display = 'none';
+            updatePOIPeopleDisplay(POIname);
             
             setTimeout(() => {
                 marker.isReturning = true;
@@ -335,27 +338,36 @@ function movePersonToPOI(marker, POIname) {
     requestAnimationFrame(animate);
 }
 
+function updatePOIPeopleDisplay(POIname) {
+    const POImarker = POIMarkers[POIname];
+    const peopleContainer = POImarker.peopleContainer;
+
+    peopleContainer.innerHTML = '';
+
+    if (peopleAtPOIs[POIname]) {
+        peopleAtPOIs[POIname].forEach(personMarker => {
+            const personIcon = document.createElement('div');
+            personIcon.className = 'poi-person';
+            personIcon.style.backgroundImage = `url(./img/${personMarker.name}.svg)`;
+            personIcon.setAttribute('data-name', personMarker.name);
+            
+            personIcon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectPerson(personsGeoJSON.features.find(p => p.properties.name === personMarker.name));
+            });
+            
+            peopleContainer.appendChild(personIcon);
+        });
+    }
+}
+
 function removePersonFromPOI(marker, POIname) {
     if (peopleAtPOIs[POIname]) {
-        const index = peopleAtPOIs[POIname].indexOf(marker);
-        if (index > -1) {
-            peopleAtPOIs[POIname].splice(index, 1);
-
-            const markers = peopleAtPOIs[POIname];
-            const POIcoords = findPOIByName(POIname).geometry.coordinates;
-            const spacing = 0.0002;
-            const totalWidth = ((markers.length - 1) * spacing);
-            
-            markers.forEach((m, i) => {
-                const offsetX = (i * spacing) - (totalWidth / 2);
-                const newPos = [
-                    POIcoords[0] + offsetX,
-                    POIcoords[1]
-                ];
-                m.setLngLat(newPos);
-            });
-        }
+        peopleAtPOIs[POIname] = peopleAtPOIs[POIname].filter(m => m !== marker);
+        updatePOIPeopleDisplay(POIname);
     }
+    
+    marker.getElement().style.display = 'block';
 }
 
 function movePersonToHome(marker, coords) {
@@ -686,6 +698,7 @@ function moveTrainMarker(marker, route, direction) {
             }
 
             requestAnimationFrame(animate);
+        // Reached either last station
         } else {
             setTimeout(() => {
                     direction *= -1;
@@ -789,7 +802,7 @@ function areAllPeopleHome() {
 }
 
 function startSimulation() {
-
+    // Reset all markers and variables to initial state
     activePassengers.clear();
     Object.values(personMarkers).forEach(marker => {
         marker.isAvailable = true;
@@ -802,6 +815,14 @@ function startSimulation() {
     });
 
     if (train1Marker && train2Marker) {
+        // Clear passengers and reset their display
+        [train1Marker, train2Marker].forEach(trainMarker => {
+            trainMarker.passengers.forEach(passenger => {
+                passenger.getElement().style.display = 'block';
+                passenger.isAvailable = true;
+            });
+            trainMarker.passengers = [];
+        });
         train1Marker.remove();
         train2Marker.remove();
     }
