@@ -55,3 +55,12 @@ Trains nicht überlappen/nebeneinander fahren lassen
           "info": "Nach seiner Scheidung steht Holger am Beginn eines neuen Lebensabschnitts: Radfahren, fitter werden, mehr Zeit mit seinem Sohn verbringen und überhaupt bewusster leben. Erster Schritt: Kauf einer Monatskarte für die Bahn. Das sind quasi zwei Fliegen mit einer Klappe: weniger Auto, mehr Bewegung. Sein Motto: Langsam anfangen und erstmal zur Haltestelle gehen."
         }
       },
+
+
+
+
+
+06.04.2026:
+- resetSimulation bzw areAllPeopleHome in moveToHome
+- moveAlongRoute scheint noch alten Code zu haben
+- trains erschaffen in mapManager
