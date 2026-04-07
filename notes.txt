@@ -63,5 +63,9 @@ Trains nicht überlappen/nebeneinander fahren lassen
 06.04.2026:
 - resetSimulation bzw areAllPeopleHome in moveToHome
 - moveAlongRoute scheint noch alten Code zu haben
-- trains erschaffen in mapManager
+- trains erschaffen in mapManager ✓
 - feedback gleichbleibende POIs
+
+07.04.2026:
+- Start-Pause-Knopf
+- Separate station indeces

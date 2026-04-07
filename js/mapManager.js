@@ -11,22 +11,20 @@ export class MapManager {
         this.personData = null;
 
         this.canSelectPerson = true;
-        this.selectedPerson = null;
         this.selectedMarker = null;
     }
 
     selectPerson = (person) => {
         if (!this.canSelectPerson) return;
 
-        this.selectedPerson = person.properties.name;
-        this.selectedMarker = Person.markers[person.properties.name];
+        this.selectedMarker = Person.allPeople[person.properties.name].marker;
 
         document.getElementById('info-image').innerHTML = `<img id="info-image" src="./img/${person.properties.name}.svg" class="info-image">`;
         document.getElementById('info-image').classList.remove('hidden');
         document.getElementById('info-title').innerHTML = person.properties.name;
         document.getElementById('info-ul').classList.remove('hidden');
         document.getElementById('info-start').innerHTML = person.properties.homeStation;
-        document.getElementById('info-destination').innerHTML = person.properties.destinationStation;
+        document.getElementById('info-destination').innerHTML = person.properties.poiStation;
         document.getElementById('info-text').innerHTML = person.properties.info;
         document.getElementById('poi-image-container').innerHTML = '';
         document.getElementById('map-overlay').classList.add('darkened');
@@ -37,7 +35,7 @@ export class MapManager {
         this.selectedMarker.getElement().classList.add('marker-selected');
     }
     selectPOI = (poi) => {
-        this.selectedMarker = POI.markers[poi.properties.name];
+        this.selectedMarker = POI.allPOIs[poi.properties.name].marker;
 
         document.getElementById('info-title').innerHTML = poi.properties.name;
         document.getElementById('info-image').classList.add('hidden');
@@ -52,7 +50,7 @@ export class MapManager {
         
     }
     selectStation = (station) => {
-        this.selectedMarker = Station.markers[station.properties.name];
+        this.selectedMarker = Station.allStations[station.properties.name].marker;
 
         document.getElementById('info-title').innerHTML = station.properties.name;
         document.getElementById('info-image').classList.add('hidden');
@@ -79,6 +77,7 @@ export class MapManager {
             style: maptilersdk.MapStyle.STREETS,
             ...MAP_CONFIG
         });
+        this.map.dragRotate.disable();
 
         // CREATE STATIONS
         this.stationData.features.forEach(station => {
@@ -89,6 +88,7 @@ export class MapManager {
         this.personData.features.forEach(person => {
             new Person(person, this.map, this.selectPerson);
         });
+        Person.initializeStations();
 
         // CREATE POIs
         this.poiData.features.forEach(poi => {

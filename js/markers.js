@@ -1,13 +1,15 @@
 import { MAP_CONFIG, svgCache } from "./config.js";
-import { findStationByName, findPOIByName, isNearLocation, calculateDistance } from "./utils.js";
+import { findStationByName, findPOIByName, isNearLocation } from "./utils.js";
 
 export class Station {
-    static markers = {};
+    static allStations = {};
 
     constructor(stationData, map, onSelect) {
         this.stationData = stationData;
         this.map = map;
         this.onSelect = onSelect;
+        this.name = stationData.properties.name;
+        this.location = stationData.geometry.coordinates;
 
         const el = document.createElement('div');
         el.className = 'station-marker';
@@ -21,36 +23,53 @@ export class Station {
             this.onSelect(stationData);
         });
         
-        Station.markers[stationData.properties.name] = this.marker;
+        Station.allStations[this.name] = this;
     }
 }
 
 export class Person {
-    static markers = {};
+    static allPeople = {};
 
     constructor(personData, map, onSelect) {
         this.personData = personData;
         this.map = map;
         this.onSelect = onSelect;
 
+        this.name = personData.properties.name;
+        this.home = personData.geometry.coordinates;
+
+        this.pickupStationName = personData.properties.homeStation;
+        this.dropoffStationName = personData.properties.poiStation;
+        this.pickupStation = null; // Station object
+        this.dropoffStation = null; // Station object
+
+        this.isReadyForPickup = false;
+        this.isReadyToMoveToStation = true;
+
+        this.isAvailable = true;
+        this.isReturning = false;
+        this.waitingAtPOI = false;
+        this.isMoving = false;
+        this.journeyCompleted = false;
+
         const el = document.createElement('div');
         el.className = 'person-marker';
-        el.setAttribute('data-name', personData.properties.name);
-        el.style.backgroundImage = `url(./img/${personData.properties.name}.svg)`;
+        el.setAttribute('data-name', this.name);
+        el.style.backgroundImage = `url(./img/${this.name}.svg)`;
 
-        fetch(`./img/${personData.properties.name}.svg`)
+        fetch(`./img/${this.name}.svg`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`Image for ${personData.properties.name} not found`);
+                    throw new Error(`Image for ${this.name} not found`);
                 }
-                const url = `./img/${personData.properties.name}.svg`;
-                svgCache.set(personData.properties.name, url);
+                const url = `./img/${this.name}.svg`;
+                svgCache.set(this.name, url);
                 el.style.backgroundImage = `url(${url})`;
             })
             .catch(error => {
                 console.warn(error);
                 const fallbackUrl = './img/Hund.svg';
-                svgCache.set(personData.properties.name, fallbackUrl);
+                svgCache.set(this.name, fallbackUrl);
                 el.style.backgroundImage = `url(${fallbackUrl})`; 
             });
         
@@ -58,20 +77,8 @@ export class Person {
             .setLngLat(personData.geometry.coordinates)
             .addTo(map);
 
-        this.marker.isAvailable = true;
-        this.marker.name = personData.properties.name;
-        this.marker.home = personData.geometry.coordinates;
-        this.marker.homeStation = personData.properties.homeStation;
-        this.marker.destinationStation = personData.properties.destinationStation;
-        this.marker.currentDestination = personData.properties.destinationStation;
-        this.marker.isReturning = false;
-        this.marker.waitingAtPOI = false;
-        this.marker.isMoving = false;
-        this.marker.journeyCompleted = false;
-
-        // Add person marker to Person.markers map to be used in selectPerson function
-        Person.markers[personData.properties.name] = this.marker;
-        this.marker.personData = personData; // Need for selectPerson function
+        // Add person to Person.allPeople map
+        Person.allPeople[personData.properties.name] = this;
 
         this.marker.getElement().addEventListener('click', (e) => {
             e.stopPropagation(); 
@@ -79,15 +86,24 @@ export class Person {
         });
     }
 
+    static initializeStations() {
+        // Resolve station names to Station objects using Station.markers lookup
+        Object.values(Person.allPeople).forEach(person => {
+            if (!person) return;
+            
+            person.pickupStation = Station.allStations[person.pickupStationName] || 
+                { name: person.pickupStationName, location: null };
+            person.dropoffStation = Station.allStations[person.dropoffStationName] || 
+                { name: person.dropoffStationName, location: null };
+        });
+    }
+
     moveToHome() {
         const start = this.marker.getLngLat();
         const startLngLat = [start.lng, start.lat];
-        const endLngLat = this.marker.home;
+        const endLngLat = this.home;
         const duration = 1500;
         const startTime = performance.now();
-
-        const currentPOI = POI.findPOIForPerson(this.marker);
-        if (currentPOI) POI.removePerson(this.marker, currentPOI);
 
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
@@ -99,23 +115,28 @@ export class Person {
             if (progress < 1) {
                 requestAnimationFrame(animate);
             } else {
-                this.marker.waitingAtPOI = false;
-                this.marker.isAvailable = true;
+                this.waitingAtPOI = false;
+                this.isAvailable = true;
+                this.isMoving = false;
+
+                // Return stations to original state
+                this.pickupStation = Station.allStations[this.personData.properties.homeStation]?.person;
+                this.dropoffStation = Station.allStations[this.personData.properties.poiStation]?.person;
+                this.isReturning = false;
             }
         };
         requestAnimationFrame(animate);
     }
 
-    moveToStation(stationName) {
-        const station = findStationByName(stationName);
+    moveToStation(station) {
         const start = this.marker.getLngLat();
         const startLngLat = [start.lng, start.lat];
-        const endLngLat = station.geometry.coordinates;
+        const endLngLat = station.stationData.geometry.coordinates;
         const duration = MAP_CONFIG.personAnimDuration;
         const startTime = performance.now();
 
-        const currentPOI = POI.findPOIForPerson(this.marker);
-        if (currentPOI) POI.removePerson(this.marker, currentPOI);
+        const currentPOI = POI.findPOIForPerson(this);
+        if (currentPOI) POI.removePerson(this, currentPOI);
 
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
@@ -127,7 +148,8 @@ export class Person {
             if (progress < 1) {
                 requestAnimationFrame(animate);
             } else {
-                this.marker.isMoving = false;
+                this.isMoving = false;
+                this.isReadyForPickup = true;
             }
         }
         requestAnimationFrame(animate);
@@ -139,12 +161,12 @@ export class Person {
 
         const start = this.marker.getLngLat();
         const startLngLat = [start.lng, start.lat];
-        const endLngLat = poi.geometry.coordinates;
+        const endLngLat = poi.poiData.geometry.coordinates;
         const duration = MAP_CONFIG.personAnimDuration;
         const startTime = performance.now();
 
-        const currentPOI = POI.findPOIForPerson(this.marker);
-        if (currentPOI) POI.removePerson(this.marker, currentPOI);
+        const currentPOI = POI.findPOIForPerson(this);
+        if (currentPOI) POI.removePerson(this, currentPOI);
 
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
@@ -156,9 +178,14 @@ export class Person {
             if (progress < 1) {
                 requestAnimationFrame(animate);
             } else {
-                POI.addPerson(this.marker, poiName);
-                this.marker.waitingAtPOI = true;
+                POI.addPerson(this, poiName);
+                this.waitingAtPOI = true;
+                this.isMoving = false;
                 this.marker.getElement().style.display = 'none';  // Hide the marker while at the POI
+                // Swap stations for return journey
+                const temp = this.pickupStation;
+                this.pickupStation = this.dropoffStation;
+                this.dropoffStation = temp;
             }
         };
         requestAnimationFrame(animate);
@@ -166,7 +193,7 @@ export class Person {
 }
 
 export class POI {
-    static markers = {};
+    static allPOIs = {};
     static peopleAtPOIs = {};
     static selectPersonCallback = null;
 
@@ -194,53 +221,53 @@ export class POI {
         this.marker.peopleContainer = peopleContainer;
 
         // Add POI marker to POI.markers map to be used in selectPOI function
-        POI.markers[poiData.properties.name] = this.marker;
+        POI.allPOIs[poiData.properties.name] = this;
 
         el.addEventListener('click', (e) => {
             e.stopPropagation();
             
-            Object.values(Person.markers).forEach(marker => {
-                marker.getElement().classList.remove('marker-selected');
+            Object.values(Person.allPeople).forEach(person => {
+                person.marker.getElement().classList.remove('marker-selected');
             });
 
             this.onSelect(poiData);
         });
     }
 
-    static addPerson(marker, poiName) {
+    static addPerson(person, poiName) {
         if (!POI.peopleAtPOIs[poiName]) {
             POI.peopleAtPOIs[poiName] = [];
         }
-        if (!POI.peopleAtPOIs[poiName].includes(marker)) {
-            POI.peopleAtPOIs[poiName].push(marker);
+        if (!POI.peopleAtPOIs[poiName].includes(person)) {
+            POI.peopleAtPOIs[poiName].push(person);
         }
         POI.updatePeopleDisplay(poiName);
     }
 
-    static removePerson(marker, poiName) {
+    static removePerson(person, poiName) {
         if (POI.peopleAtPOIs[poiName]) {
-            POI.peopleAtPOIs[poiName] = POI.peopleAtPOIs[poiName].filter(m => m !== marker);
+            POI.peopleAtPOIs[poiName] = POI.peopleAtPOIs[poiName].filter(p => p !== person);
             POI.updatePeopleDisplay(poiName);
         }
-        marker.getElement().style.display = 'block';  // Show the marker again
+        person.marker.getElement().style.display = 'block';  // Show the marker again
     }
 
     static updatePeopleDisplay(poiName) {
-        const poiMarker = POI.markers[poiName];
+        const poiMarker = POI.allPOIs[poiName].marker;
         if (!poiMarker || !poiMarker.peopleContainer) return;
 
         poiMarker.peopleContainer.innerHTML = '';
 
         if (POI.peopleAtPOIs[poiName]) {
-            POI.peopleAtPOIs[poiName].forEach(personMarker => {
+            POI.peopleAtPOIs[poiName].forEach(person => {
                 const personIcon = document.createElement('div');
                 personIcon.className = 'poi-person';
-                personIcon.style.backgroundImage = `url(./img/${personMarker.name}.svg)`;
-                personIcon.setAttribute('data-name', personMarker.name);
+                personIcon.style.backgroundImage = `url(./img/${person.name}.svg)`;
+                personIcon.setAttribute('data-name', person.name);
                 
                 personIcon.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const personData = personMarker.personData;
+                    const personData = person.personData;
                     if (POI.selectPersonCallback && personData) {
                         POI.selectPersonCallback(personData);
                     }
@@ -255,9 +282,9 @@ export class POI {
         return POI.peopleAtPOIs[poiName] || [];
     }
 
-    static findPOIForPerson(marker) {
-        for (const [poiName, markers] of Object.entries(POI.peopleAtPOIs)) {
-            if (markers.includes(marker)) {
+    static findPOIForPerson(person) {
+        for (const [poiName, people] of Object.entries(POI.peopleAtPOIs)) {
+            if (people.includes(person)) {
                 return poiName;
             }
         }
@@ -271,24 +298,56 @@ export class Train {
     constructor(startCoords, direction, map) {
         const el = document.createElement('div');
         el.className = 'train-marker';
-        this.marker = new maptilersdk.Marker({element: el, anchor: 'center'})
+        this.marker = new maptilersdk.Marker({element: el, anchor: 'bottom'})
             .setLngLat(startCoords)
             .addTo(map);
 
-        this.marker.passengers = []; // Array of passenger markers
+        this.passengers = []; // Array of passenger markers
         this.direction = direction; // 1 or -1
+    }
+    /**
+     * Makes a person move if the train is approaching their pickup station and will pass their dropoff station
+     * @param {Object} route 
+     * @param {number} currentIndex 
+     */
+    checkForPickupStation(route, currentIndex) {
+        const lookAheadDistance = MAP_CONFIG.pickupStationsAhead;
+
+        Object.values(Person.allPeople).forEach(person => {
+            // Check if the person is ready to move to station and if the train is approaching their pickup station
+            if (!person.isReadyToMoveToStation) return;
+            const pickupIndex = route.findIndex(point =>
+                isNearLocation({lng: point[0], lat: point[1]}, person.pickupStation.location, 0.0001)
+            );
+            if (pickupIndex === -1) return;
+
+            const isApproachingPickup = this.direction === 1 ?
+                (pickupIndex > currentIndex && pickupIndex <= currentIndex + lookAheadDistance) :
+                (pickupIndex < currentIndex && pickupIndex >= currentIndex - lookAheadDistance);
+            
+            const dropoffIndex = route.findIndex(point =>
+                isNearLocation({lng: point[0], lat: point[1]}, person.dropoffStation.stationData.geometry.coordinates, 0.0001)
+            );
+            const willPassDropoff = this.direction === 1 ?
+                (dropoffIndex > currentIndex && dropoffIndex <= route.length - 1) :
+                (dropoffIndex < currentIndex && dropoffIndex >= 0);
+
+            if (isApproachingPickup && willPassDropoff) {
+                person.isReadyToMoveToStation = false;
+                person.moveToStation(person.pickupStation);
+            };
+        });
+
     }
 
     moveAlongRoute(route) {
-        let startPoint = this.marker.direction === 1 ? route[0] : route[route.length - 1];
-        let endPoint = this.marker.direction === 1 ? route[route.length - 1] : route[0];
-        let currentIndex = route.indexOf(startPoint);
-        let destinationIndex = route.indexOf(endPoint);
+        let currentIndex = this.direction === 1 ? 0 : route.length - 1;
+        let destinationIndex = this.direction === 1 ? route.length - 1 : 0;
+
         let isWaitingAtStation = false;
         let waitStartTime = null;
         const stationWaitTime = 1000;
-        let hasStoppedAtCurrentStation = false;
-        let lastStationCoords = null;
+        let lastStationIndex = null;
 
         // Display passengers
         const passengerContainer = document.createElement('div');
@@ -297,7 +356,7 @@ export class Train {
 
         const updatePassengerIcons = () => {
             passengerContainer.innerHTML = '';
-            this.marker.passengers.forEach(passenger => {
+            this.passengers.forEach(passenger => {
                 const icon = document.createElement('img');
                 icon.src = svgCache.get(passenger.name) || './img/Hund.svg';
                 icon.className = 'person-marker-small';
@@ -308,9 +367,8 @@ export class Train {
 
                 icon.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const personData = passenger.personData;
-                    if (personData && Train.selectPersonCallback) {
-                        Train.selectPersonCallback(personData);
+                    if (passenger.personData && Train.selectPersonCallback) {
+                        Train.selectPersonCallback(passenger.personData);
                     }
                 });
 
@@ -318,109 +376,50 @@ export class Train {
             });
         };
 
-        const handlePickup = (personMarker, currentPos, currentIndex) => {
-            if (state.activePassengers.has(personMarker.name)) return false;
+        /**
+         * @param {Object} currentPos - Current position of the train {lng, lat}
+         * @param {number} currentIndex - Current index of the train on the route
+         * @returns {boolean} whether the train should stop at this station
+         */
+        const shouldStopAtStation = (currentPos, currentIndex) => {
+            // Stop if we have a passenger to drop off at this location
+            const isDropoffStation = this.passengers.some(passenger => {
+                const dropoffStation = findStationByName(passenger.dropoffStation);
+                if (!dropoffStation) return false;
+                return isNearLocation(currentPos, dropoffStation.stationData.geometry.coordinates, 0.0001);
+            });
+            if (isDropoffStation) return true;
 
-            const personLngLat = personMarker.getLngLat();
-            const distance = calculateDistance(currentPos, [personLngLat.lng, personLngLat.lat]);
-            
-            const destinationStation = findStationByName(personMarker.currentDestination);
-            if (!destinationStation) return;
+            // Stop if we have a passenger to pick up at this location
+            const hasPickup = Object.values(Person.allPeople).some(person => {
+                if (!person.isReadyForPickup) return false;
 
-            const destIndex = route.findIndex(point => 
-                isNearLocation({lng: point[0], lat: point[1]}, destinationStation.geometry.coordinates, 0.0001)
-            );
-            
-            const willPassDestination = this.marker.direction === 1 ? 
-                (destIndex > currentIndex && destIndex <= route.length - 1) :
-                (destIndex < currentIndex && destIndex >= 0);
-            
-            if (distance < 0.0002 && personMarker.isAvailable && willPassDestination) {
-                this.marker.passengers.push(personMarker);
-                personMarker.isAvailable = false;
-                personMarker.getElement().style.display = 'none';
-                state.activePassengers.add(personMarker.name);
-                updatePassengerIcons();
-                return true;
-            }
-            return false;
-        };
-
-        const handleDropoff = (personMarker, currentPos) => {
-            if (personMarker.isAvailable) return false;
-
-            const destinationStation = findStationByName(personMarker.currentDestination);
-            if (!destinationStation) return false;
-
-            if (isNearLocation({lng: currentPos.lng, lat: currentPos.lat}, destinationStation.geometry.coordinates)) {
-                personMarker.setLngLat(destinationStation.geometry.coordinates);
-                personMarker.getElement().style.display = 'block';
-                state.activePassengers.delete(personMarker.name);
-
-                if (personMarker.isReturning) {
-                    // movePersonToHome(personMarker, personMarker.home); // Call from Person instance
-                } else {
-                    const person = state.personsGeoJSON.features.find(p => p.properties.name === personMarker.name);
-                    // movePersonToPOI(personMarker, person.properties.destination); // Call from Person instance
-                }
-                return true;
-            }
-            return false;
-        };
-
-        const shouldStopAtLocation = (currentPos, currentIndex) => {
-            const hasViablePassenger = Object.values(Person.markers).some(personMarker => {
-                if (!personMarker.isAvailable) return false;
-                const personLngLat = personMarker.getLngLat();
+                const personLngLat = person.marker.getLngLat();
                 if (!isNearLocation(currentPos, [personLngLat.lng, personLngLat.lat])) return false;
 
-                const destinationStation = findStationByName(personMarker.currentDestination);
-                if (!destinationStation) return false;
-
-                const destIndex = route.findIndex(point => 
-                    isNearLocation({lng: point[0], lat: point[1]}, destinationStation.geometry.coordinates, 0.0001)
+                const pickupIndex = route.findIndex(point =>
+                    isNearLocation({lng: point[0], lat: point[1]}, person.pickupStation.stationData.geometry.coordinates, 0.0001)
                 );
+                const dropoffIndex = route.findIndex(point =>
+                    isNearLocation({lng: point[0], lat: point[1]}, person.dropoffStation.stationData.geometry.coordinates, 0.0001)
+                );
+                if (pickupIndex === -1 || dropoffIndex === -1) return false;
 
-                return this.marker.direction === 1 ? 
-                    (destIndex > currentIndex && destIndex <= route.length - 1) :
-                    (destIndex < currentIndex && destIndex >= 0);
+                const willPassDropoff = this.direction === 1 ?
+                    (dropoffIndex > currentIndex && dropoffIndex <= destinationIndex) :
+                    (dropoffIndex < currentIndex && dropoffIndex >= destinationIndex);
+                if (!willPassDropoff) return false;
+                return true;
             });
 
-            const isDestinationStation = this.marker.passengers.some(passenger => {
-                const destinationStation = findStationByName(passenger.currentDestination);
-                if (!destinationStation) return false;
-                return isNearLocation(currentPos, destinationStation.geometry.coordinates);
-            });
-
-            return hasViablePassenger || isDestinationStation;
-        };
-
-        const checkForPersonMovement = (currentPos) => {
-            Object.values(Person.markers).forEach(personMarker => {
-                if (!personMarker.isMoving && !personMarker.waitingAtPOI && !personMarker.journeyCompleted) {
-                    const targetStation = personMarker.isReturning ? 
-                        personMarker.destinationStation : 
-                        personMarker.homeStation; 
-                    
-                    // const triggerStation = findStationBeforeTarget(personMarker, targetStation, this.marker.direction, 3);
-                    // if (!triggerStation) return;
-                    
-                    // const triggerStationData = findStationByName(triggerStation);
-                    // if (!triggerStationData) return;
-                    
-                    // if (isNearLocation(currentPos, triggerStationData.geometry.coordinates)) {
-                    //     personMarker.isMoving = true;
-                    //     // movePersonToStation(personMarker, targetStation); // Call from Person instance
-                    // }
-                }
-            });
+            return isDropoffStation || hasPickup;
         };
 
         const animate = (timestamp) => {
+
             if (isWaitingAtStation) {
-                if (waitStartTime === null) {
-                    waitStartTime = timestamp;
-                }
+                if (!waitStartTime) waitStartTime = timestamp;
+
                 const waitElapsed = timestamp - waitStartTime;
                 if (waitElapsed < stationWaitTime) {
                     requestAnimationFrame(animate);
@@ -428,64 +427,23 @@ export class Train {
                 }
                 isWaitingAtStation = false;
                 waitStartTime = null;
-                hasStoppedAtCurrentStation = true;
-                lastStationCoords = this.marker.getLngLat();
-
-                const availablePassengers = Object.values(Person.markers).filter(personMarker => 
-                    personMarker.isAvailable && 
-                    isNearLocation(this.marker.getLngLat(), [personMarker.getLngLat().lng, personMarker.getLngLat().lat])
-                );
-
-                availablePassengers.forEach(personMarker => {
-                    handlePickup(personMarker, this.marker.getLngLat(), currentIndex);
-                });
-
-                if (this.marker.passengers.length > 0) {
-                    const passengersToProcess = [...this.marker.passengers];
-                    const droppedOffPassengers = passengersToProcess.filter(passenger => 
-                        handleDropoff(passenger, this.marker.getLngLat())
-                    );
-                    
-                    droppedOffPassengers.forEach(passenger => {
-                        const index = this.marker.passengers.indexOf(passenger);
-                        if (index > -1) {
-                            this.marker.passengers.splice(index, 1);
-                        }
-                    });
-                    
-                    updatePassengerIcons();
-                }
             }
 
-            if ((this.marker.direction === 1 && currentIndex < destinationIndex) || 
-                (this.marker.direction === -1 && currentIndex > destinationIndex)) {
+            this.checkForPickupStation(route, currentIndex);
+
+            if ((this.direction === 1 && currentIndex < destinationIndex) ||
+                (this.direction === -1 && currentIndex > destinationIndex)) {
+
                 const currentPos = this.marker.getLngLat();
-                const nextIndex = currentIndex + this.marker.direction;
+                const nextIndex = currentIndex + this.direction;
                 const nextPos = route[nextIndex];
 
-                const step = 0.00005;
+                const step = MAP_CONFIG.trainStepSize;
                 const dx = nextPos[0] - currentPos.lng;
                 const dy = nextPos[1] - currentPos.lat;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (lastStationCoords) {
-                    if (Math.abs(currentPos.lng - lastStationCoords.lng) > 0.0002 || 
-                        Math.abs(currentPos.lat - lastStationCoords.lat) > 0.0002) {
-                            hasStoppedAtCurrentStation = false;
-                            lastStationCoords = null;
-                        }
-                }
-
-                const currentCoords = [currentPos.lng, currentPos.lat];
-                if (shouldStopAtLocation({lng: currentCoords[0], lat: currentCoords[1]}, currentIndex) && 
-                !hasStoppedAtCurrentStation) {
-                    isWaitingAtStation = true;
-                    waitStartTime = timestamp;
-                    requestAnimationFrame(animate);
-                    return;
-                }
-                checkForPersonMovement({lng: currentCoords[0], lat: currentCoords[1]});
-
+                // Move to next point
                 if (distance < step) {
                     this.marker.setLngLat(nextPos);
                     currentIndex = nextIndex;
@@ -493,21 +451,27 @@ export class Train {
                     const angle = Math.atan2(dy, dx);
                     const newLng = currentPos.lng + step * Math.cos(angle);
                     const newLat = currentPos.lat + step * Math.sin(angle);
-                    this.marker.setLngLat([newLng, newLat]);   
+                    this.marker.setLngLat([newLng, newLat]);
+                }
+
+                // Check if we should stop at next location
+                if (lastStationIndex !== currentIndex && shouldStopAtStation({lng: nextPos[0], lat: nextPos[1]}, currentIndex)) {
+                    isWaitingAtStation = true;
+                    waitStartTime = timestamp;
+                    return;
                 }
 
                 requestAnimationFrame(animate);
             } else {
+                // Reached end of route, reverse direction
                 setTimeout(() => {
-                        this.marker.direction *= -1;
-                        const temp = startPoint;
-                        startPoint = endPoint;
-                        endPoint = temp;
-                        currentIndex = this.marker.direction === 1 ? route.indexOf(startPoint) : route.length - 1;
-                        destinationIndex = this.marker.direction === 1 ? route.length - 1 : 0;
-                        this.marker.setLngLat(route[currentIndex]);
-                        requestAnimationFrame(animate);
-                    }, 10000);
+                    this.direction *= -1;
+                    currentIndex = this.direction === 1 ? 0 : route.length - 1;
+                    destinationIndex = this.direction === 1 ? route.length - 1 : 0;
+                    this.marker.setLngLat(route[currentIndex]);
+                    lastStationIndex = null;
+                    requestAnimationFrame(animate);
+                }, 10000);
             }
         };
 

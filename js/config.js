@@ -5,11 +5,13 @@ export const MAP_CONFIG = {
     minZoom: 12,
     maxZoom: 15,
     maxBounds: [[8.680, 52.97], [8.870, 53.06]],
+    minPitch: 0,
+    maxPitch: 0,
 
     defaultReturnTimer: 10000,
-    trainStepSize: 0.00005,
+    trainStepSize: 0.00003, // Train speed
     personAnimDuration: 1500,
+    pickupStationsAhead: 15,
 }
 
 export const svgCache = new Map();
-export const activePassengers = new Set();

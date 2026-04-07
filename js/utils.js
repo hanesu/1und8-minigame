@@ -1,10 +1,10 @@
 export function findStationByName(stationName) {
-    return stationsGeoJSON.features.find(station => 
+    return stationData.features.find(station => 
         station.properties.name === stationName
     );
 }
 export function findPOIByName(POIname) {
-    return POIsGeoJSON.features.find(POI => 
+    return poiData.features.find(POI => 
         POI.properties.name === POIname
     );
 }
