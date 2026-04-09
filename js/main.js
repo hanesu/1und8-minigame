@@ -1,7 +1,6 @@
 import {MapManager} from "./mapManager.js";
 import {DataLoader} from "./dataLoader.js";
 import {Person, POI} from "./markers.js";
-import {findStationByName, findPOIByName, isNearLocation, calculateDistance} from "./utils.js";
 
 
 document.getElementById('opt-in-button').addEventListener('click', async () => {

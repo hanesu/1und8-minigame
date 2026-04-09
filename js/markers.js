@@ -1,5 +1,5 @@
 import { MAP_CONFIG, svgCache } from "./config.js";
-import { findStationByName, findPOIByName, isNearLocation } from "./utils.js";
+import { isNearLocation } from "./utils.js";
 
 export class Station {
     static allStations = {};
@@ -43,13 +43,12 @@ export class Person {
         this.pickupStation = null; // Station object
         this.dropoffStation = null; // Station object
 
-        this.isReadyForPickup = false;
-        this.isReadyToMoveToStation = true;
+        this.isReadyForPickup = false; // Person ready to be picked up at station
+        this.isReadyToMoveToStation = true; // Person ready to move to station when train is approaching
 
-        this.isAvailable = true;
-        this.isReturning = false;
-        this.waitingAtPOI = false;
-        this.isMoving = false;
+        this.poiTimer = personData.properties.poiTimer || MAP_CONFIG.defaultPOITimer;
+
+        this.isReturning = false; // Person is on their return journey from POI to home
         this.journeyCompleted = false;
 
         const el = document.createElement('div');
@@ -97,8 +96,11 @@ export class Person {
                 { name: person.dropoffStationName, location: null };
         });
     }
-
+    /**
+     * moves Person from dropoff station back to home location. Also resets pickup and dropoff stations
+     */
     moveToHome() {
+        console.log(`Moving ${this.name} back home...`);
         const start = this.marker.getLngLat();
         const startLngLat = [start.lng, start.lat];
         const endLngLat = this.home;
@@ -115,10 +117,6 @@ export class Person {
             if (progress < 1) {
                 requestAnimationFrame(animate);
             } else {
-                this.waitingAtPOI = false;
-                this.isAvailable = true;
-                this.isMoving = false;
-
                 // Return stations to original state
                 this.pickupStation = Station.allStations[this.personData.properties.homeStation]?.person;
                 this.dropoffStation = Station.allStations[this.personData.properties.poiStation]?.person;
@@ -127,7 +125,10 @@ export class Person {
         };
         requestAnimationFrame(animate);
     }
-
+    /**
+     * Moves person from home to pickup station
+     * @param {Object} station 
+     */
     moveToStation(station) {
         const start = this.marker.getLngLat();
         const startLngLat = [start.lng, start.lat];
@@ -148,15 +149,16 @@ export class Person {
             if (progress < 1) {
                 requestAnimationFrame(animate);
             } else {
-                this.isMoving = false;
                 this.isReadyForPickup = true;
             }
         }
         requestAnimationFrame(animate);
     }
-
+    /**
+     * Moves person from dropoff station to POI. Also handles swapping pickup and dropoff stations for return journey
+     */
     moveToPOI(poiName) {
-        const poi = findPOIByName(poiName);
+        const poi = POI.allPOIs[poiName];
         if (!poi) return;
 
         const start = this.marker.getLngLat();
@@ -179,13 +181,16 @@ export class Person {
                 requestAnimationFrame(animate);
             } else {
                 POI.addPerson(this, poiName);
-                this.waitingAtPOI = true;
-                this.isMoving = false;
                 this.marker.getElement().style.display = 'none';  // Hide the marker while at the POI
                 // Swap stations for return journey
                 const temp = this.pickupStation;
                 this.pickupStation = this.dropoffStation;
                 this.dropoffStation = temp;
+
+                setTimeout(() => {
+                    this.isReturning = true;
+                    this.isReadyToMoveToStation = true;
+                }, this.poiTimer);
             }
         };
         requestAnimationFrame(animate);
@@ -304,113 +309,193 @@ export class Train {
 
         this.passengers = []; // Array of passenger markers
         this.direction = direction; // 1 or -1
+
+        // Display passengers
+        const passengerContainer = document.createElement('div');
+        passengerContainer.className = 'passenger-container';
+        this.marker.getElement().appendChild(passengerContainer);
+        this.passengerContainer = passengerContainer;
+    }
+
+    buildStationRouteIndices(route, stationFeatures) {
+        return stationFeatures
+            .map(station => {
+                const coordinates = station.geometry.coordinates;
+                const routeIndex = route.findIndex(point =>
+                    isNearLocation({lng: point[0], lat: point[1]}, coordinates, 0.0001)
+                );
+                if (routeIndex === -1) return null;
+
+                return {
+                    name: station.properties.name,
+                    coordinates,
+                    routeIndex,
+                };
+            })
+            .filter(Boolean)
+            .sort((left, right) => left.routeIndex - right.routeIndex);
+    }
+
+    getCurrentStationListIndex(currentRouteIndex, stationRouteIndices) {
+        if (this.direction === 1) {
+            for (let index = stationRouteIndices.length - 1; index >= 0; index -= 1) {
+                if (stationRouteIndices[index].routeIndex <= currentRouteIndex) {
+                    return index;
+                }
+            }
+            return -1;
+        }
+
+        for (let index = 0; index < stationRouteIndices.length; index += 1) {
+            if (stationRouteIndices[index].routeIndex >= currentRouteIndex) {
+                return index;
+            }
+        }
+
+        return stationRouteIndices.length;
+    }
+
+    findStationListIndexByName(stationRouteIndices, stationName) {
+        return stationRouteIndices.findIndex(station => station.name === stationName);
+    }
+
+    willPassDropoffStation(person, currentStationIndex, stationRouteIndices) {
+        const dropoffIndex = this.findStationListIndexByName(stationRouteIndices, person.dropoffStation?.name);
+        if (dropoffIndex === -1) return false;
+
+        return this.direction === 1 ?
+            dropoffIndex > currentStationIndex :
+            dropoffIndex < currentStationIndex;
+    }
+
+    getBoardablePassengersAtStation(currentPos, currentStationIndex, stationRouteIndices) {
+        return Object.values(Person.allPeople).filter(person => {
+            if (!person.isReadyForPickup) return false;
+            if (this.passengers.includes(person)) return false;
+
+            const personLngLat = person.marker.getLngLat();
+            if (!isNearLocation(currentPos, [personLngLat.lng, personLngLat.lat])) return false;
+
+            return this.willPassDropoffStation(person, currentStationIndex, stationRouteIndices);
+        });
+    }
+
+    dropoffPassengersAtStation(currentPos) {
+        const droppedOff = this.passengers.filter(person => {
+            const dropoffCoords = person.dropoffStation?.stationData?.geometry?.coordinates;
+            if (!dropoffCoords) return false;
+            return isNearLocation(currentPos, dropoffCoords, 0.0001);
+        });
+
+        droppedOff.forEach(person => {
+            this.passengers = this.passengers.filter(p => p !== person);
+            person.marker.setLngLat(person.dropoffStation.stationData.geometry.coordinates);
+            person.marker.getElement().style.display = 'block';
+            if (person.isReturning) {
+                person.moveToHome();
+            } else {
+                person.moveToPOI(person.personData.properties.poi);
+            }
+        });
+
+        if (droppedOff.length > 0) this.updatePassengerIcons();
+    }
+
+    pickupPassengersAtStation(currentPos, currentStationIndex, stationRouteIndices) {
+        this.getBoardablePassengersAtStation(currentPos, currentStationIndex, stationRouteIndices).forEach(person => {
+            this.passengers.push(person);
+            person.isReadyForPickup = false;
+            person.isReadyToMoveToStation = false;
+            person.marker.getElement().style.display = 'none';
+        });
+
+        this.updatePassengerIcons();
+    }
+
+    updatePassengerIcons() {
+        this.passengerContainer.innerHTML = '';
+        this.passengers.forEach(passenger => {
+            const icon = document.createElement('img');
+            icon.src = svgCache.get(passenger.name) || './img/Hund.svg';
+            icon.className = 'person-marker-small';
+            icon.setAttribute('data-name', passenger.name);
+            /*
+            if (state.selectedPerson === passenger.name) {
+                icon.classList.add('marker-selected');
+            }
+                */
+
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (passenger.personData && Train.selectPersonCallback) {
+                    Train.selectPersonCallback(passenger.personData);
+                }
+            });
+
+            this.passengerContainer.appendChild(icon);
+        });
     }
     /**
      * Makes a person move if the train is approaching their pickup station and will pass their dropoff station
-     * @param {Object} route 
-     * @param {number} currentIndex 
+     * @param {number} currentStationIndex 
+     * @param {Array} stationRouteIndices
      */
-    checkForPickupStation(route, currentIndex) {
+    checkForPickupStation(currentStationIndex, stationRouteIndices) {
         const lookAheadDistance = MAP_CONFIG.pickupStationsAhead;
 
         Object.values(Person.allPeople).forEach(person => {
             // Check if the person is ready to move to station and if the train is approaching their pickup station
             if (!person.isReadyToMoveToStation) return;
-            const pickupIndex = route.findIndex(point =>
-                isNearLocation({lng: point[0], lat: point[1]}, person.pickupStation.location, 0.0001)
-            );
+            const pickupIndex = this.findStationListIndexByName(stationRouteIndices, person.pickupStation?.name);
             if (pickupIndex === -1) return;
 
             const isApproachingPickup = this.direction === 1 ?
-                (pickupIndex > currentIndex && pickupIndex <= currentIndex + lookAheadDistance) :
-                (pickupIndex < currentIndex && pickupIndex >= currentIndex - lookAheadDistance);
-            
-            const dropoffIndex = route.findIndex(point =>
-                isNearLocation({lng: point[0], lat: point[1]}, person.dropoffStation.stationData.geometry.coordinates, 0.0001)
-            );
-            const willPassDropoff = this.direction === 1 ?
-                (dropoffIndex > currentIndex && dropoffIndex <= route.length - 1) :
-                (dropoffIndex < currentIndex && dropoffIndex >= 0);
+                (pickupIndex > currentStationIndex && pickupIndex <= currentStationIndex + lookAheadDistance) :
+                (pickupIndex < currentStationIndex && pickupIndex >= currentStationIndex - lookAheadDistance);
+
+            const willPassDropoff = this.willPassDropoffStation(person, currentStationIndex, stationRouteIndices);
 
             if (isApproachingPickup && willPassDropoff) {
                 person.isReadyToMoveToStation = false;
                 person.moveToStation(person.pickupStation);
             };
         });
-
     }
 
-    moveAlongRoute(route) {
+    moveAlongRoute(route, stationFeatures) {
+        const stationRouteIndices = this.buildStationRouteIndices(route, stationFeatures);
+        const stationByRouteIndex = new Map(
+            stationRouteIndices.map((station, index) => [station.routeIndex, { ...station, stationListIndex: index }])
+        );
+
         let currentIndex = this.direction === 1 ? 0 : route.length - 1;
         let destinationIndex = this.direction === 1 ? route.length - 1 : 0;
 
         let isWaitingAtStation = false;
         let waitStartTime = null;
-        const stationWaitTime = 1000;
+        const stationWaitTime = MAP_CONFIG.trainWaitTimeAtStation;
         let lastStationIndex = null;
-
-        // Display passengers
-        const passengerContainer = document.createElement('div');
-        passengerContainer.className = 'passenger-container';
-        this.marker.getElement().appendChild(passengerContainer);
-
-        const updatePassengerIcons = () => {
-            passengerContainer.innerHTML = '';
-            this.passengers.forEach(passenger => {
-                const icon = document.createElement('img');
-                icon.src = svgCache.get(passenger.name) || './img/Hund.svg';
-                icon.className = 'person-marker-small';
-                icon.setAttribute('data-name', passenger.name);
-                if (state.selectedPerson === passenger.name) {
-                    icon.classList.add('marker-selected');
-                }
-
-                icon.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (passenger.personData && Train.selectPersonCallback) {
-                        Train.selectPersonCallback(passenger.personData);
-                    }
-                });
-
-                passengerContainer.appendChild(icon);
-            });
-        };
 
         /**
          * @param {Object} currentPos - Current position of the train {lng, lat}
          * @param {number} currentIndex - Current index of the train on the route
          * @returns {boolean} whether the train should stop at this station
          */
-        const shouldStopAtStation = (currentPos, currentIndex) => {
+        const shouldStopAtStation = (currentPos, currentStationIndex) => {
             // Stop if we have a passenger to drop off at this location
             const isDropoffStation = this.passengers.some(passenger => {
-                const dropoffStation = findStationByName(passenger.dropoffStation);
+                const dropoffStation = passenger.dropoffStation;
                 if (!dropoffStation) return false;
                 return isNearLocation(currentPos, dropoffStation.stationData.geometry.coordinates, 0.0001);
             });
             if (isDropoffStation) return true;
 
             // Stop if we have a passenger to pick up at this location
-            const hasPickup = Object.values(Person.allPeople).some(person => {
-                if (!person.isReadyForPickup) return false;
-
-                const personLngLat = person.marker.getLngLat();
-                if (!isNearLocation(currentPos, [personLngLat.lng, personLngLat.lat])) return false;
-
-                const pickupIndex = route.findIndex(point =>
-                    isNearLocation({lng: point[0], lat: point[1]}, person.pickupStation.stationData.geometry.coordinates, 0.0001)
-                );
-                const dropoffIndex = route.findIndex(point =>
-                    isNearLocation({lng: point[0], lat: point[1]}, person.dropoffStation.stationData.geometry.coordinates, 0.0001)
-                );
-                if (pickupIndex === -1 || dropoffIndex === -1) return false;
-
-                const willPassDropoff = this.direction === 1 ?
-                    (dropoffIndex > currentIndex && dropoffIndex <= destinationIndex) :
-                    (dropoffIndex < currentIndex && dropoffIndex >= destinationIndex);
-                if (!willPassDropoff) return false;
-                return true;
-            });
+            const hasPickup = this.getBoardablePassengersAtStation(
+                currentPos,
+                currentStationIndex,
+                stationRouteIndices
+            ).length > 0;
 
             return isDropoffStation || hasPickup;
         };
@@ -418,6 +503,7 @@ export class Train {
         const animate = (timestamp) => {
 
             if (isWaitingAtStation) {
+                console.log("Waiting at station...");
                 if (!waitStartTime) waitStartTime = timestamp;
 
                 const waitElapsed = timestamp - waitStartTime;
@@ -429,7 +515,8 @@ export class Train {
                 waitStartTime = null;
             }
 
-            this.checkForPickupStation(route, currentIndex);
+            const currentStationIndex = this.getCurrentStationListIndex(currentIndex, stationRouteIndices);
+            this.checkForPickupStation(currentStationIndex, stationRouteIndices);
 
             if ((this.direction === 1 && currentIndex < destinationIndex) ||
                 (this.direction === -1 && currentIndex > destinationIndex)) {
@@ -454,10 +541,28 @@ export class Train {
                     this.marker.setLngLat([newLng, newLat]);
                 }
 
-                // Check if we should stop at next location
-                if (lastStationIndex !== currentIndex && shouldStopAtStation({lng: nextPos[0], lat: nextPos[1]}, currentIndex)) {
-                    isWaitingAtStation = true;
+                const reachedStation = stationByRouteIndex.get(currentIndex);
+
+                if (
+                    reachedStation &&
+                    lastStationIndex !== reachedStation.stationListIndex &&
+                    shouldStopAtStation(
+                        {lng: reachedStation.coordinates[0], lat: reachedStation.coordinates[1]},
+                        reachedStation.stationListIndex
+                    )
+                ) {
+                    this.dropoffPassengersAtStation(
+                        {lng: reachedStation.coordinates[0], lat: reachedStation.coordinates[1]}
+                    );
+                    this.pickupPassengersAtStation(
+                        {lng: reachedStation.coordinates[0], lat: reachedStation.coordinates[1]},
+                        reachedStation.stationListIndex,
+                        stationRouteIndices
+                    );
+                    lastStationIndex = reachedStation.stationListIndex;
                     waitStartTime = timestamp;
+                    isWaitingAtStation = true;
+                    requestAnimationFrame(animate);
                     return;
                 }
 

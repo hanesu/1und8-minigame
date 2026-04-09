@@ -8,10 +8,11 @@ export const MAP_CONFIG = {
     minPitch: 0,
     maxPitch: 0,
 
-    defaultReturnTimer: 10000,
+    defaultPOITimer: 10000, // Default time a person spends at a POI in ms
     trainStepSize: 0.00003, // Train speed
+    trainWaitTimeAtStation: 1000, // Time to wait at each station in ms
     personAnimDuration: 1500,
-    pickupStationsAhead: 15,
+    pickupStationsAhead: 3,
 }
 
 export const svgCache = new Map();

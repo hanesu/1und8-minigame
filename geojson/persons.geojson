@@ -12,8 +12,7 @@
           "poi": "Rathaus Stuhr",
           "poiStation": "Bf Stuhr",
           "homeStation": "Hespenstraße",
-          "startTimer": 10000,
-          "returnTimer": 20000,
+          "poiTimer": 20000,
           "info": "Auch wenn sie lange in Bonn gelebt hat: Mit ihrem Wellensittich ist Berta in Stuhr bekannt wie ein bunter Hund. Den hat sie nämlich immer dabei, wenn sie unterwegs ist. Ein Auto hat die alleinstehende Sozialpädagogin aus Überzeugung seit Jahrzehnten nicht mehr. Mit dem Rad aber sind ihr die meisten Strecken mittlerweile allerdings zu weit. Die Bahn kommt da gerade recht."
         }
       },
@@ -28,8 +27,7 @@
           "poi": "Famila",
           "poiStation": "Bf Leeste",
           "homeStation": "Beethovenstraße",
-          "startTimer": 6000,
-          "returnTimer": 10000,
+          "poiTimer": 10000,
           "info": "Witwe Dorothea fährt nie allein. Immer hat sie ihren Yorkshire Terrier dabei, egal, wohin es geht. Früher hat ihr Mann sie und die zwei gemeinsamen Töchter mit dem Auto zu jedem gewünschten Ziel gefahren. Nach seinem Tod ist die ehemalige Sekretärin auf die Bahn umgestiegen – mit ihren 75 Jahren möchte sie sich nicht wieder selbst hinters Steuer setzen."
         }
       },
@@ -44,8 +42,7 @@
           "poi": "KGS Stuhr-Brinkum",
           "poiStation": "Bassumer Straße",
           "homeStation": "Dovemoorstraße",
-          "startTimer": 0,
-          "returnTimer": 20000,
+          "poiTimer": 20000,
           "info": "Tik Toks und Videos sind ihr größtes Hobby – und ihr Traum. Später will sie Influencerin werden. Reisen, berühmt sein. Jetzt ist aber schon mal gut, dass sie nichtmehr von Mama oder Papa überall hingefahren werden muss. Dafür ist sie echt auch zu alt. Peinlich ist das, wenn sie mit den Freundinnen shoppen will und die Eltern sind immer irgendwie dabei. Ehrlich, geht gar nicht. Da lieber Bahn fahren."
         }
       },
@@ -60,8 +57,7 @@
           "poi": "KGS Stuhr-Brinkum",
           "poiStation": "Bassumer Straße",
           "homeStation": "Stuhrbaum",
-          "startTimer": 5000,
-          "returnTimer": 20000,
+          "poiTimer": 20000,
           "info": "Pferde sind ihr Hobby – jetzt sag keiner: Typisch Mädchen. Dass kann Natascha nicht leiden. Reittherapeutin ist ein echter Beruf. Gerade macht sie ein Praktikum auf dem Hof, denkt an ihre Zukunft – und Fin, den findet sie nämlich echt süß. Für ihre Eltern ist sie noch »die Kleine«. Das nervt zwar, dass sie sich Sorgen machen, ist aber okay. Und wenn sie die Bahn nimmt, darf sie jetzt auch mal später heimkommen."
         }
       },
@@ -76,8 +72,7 @@
           "poi": "KGS Stuhr-Brinkum",
           "poiStation": "Bassumer Straße",
           "homeStation": "Bf Leeste",
-          "startTimer": 20000,
-          "returnTimer": 15000,
+          "poiTimer": 15000,
           "info": "Finn ist gerade 15 Jahre alt geworden - und hat das gebührend gefeiert. Zusammen mit seinen Freunden ist er unterwegs gewesen bis – naja, länger als eigentlich erlaubt. Aber mit der Bahn war er schnell zuhause. Früher musste er immer rumkutschiert werden - zum Handball-Training nach Stuhr, zu seinen Freunden und so. Jetzt fährt er Bahn und ist völlig unabhängig. Das ist richtig toll!"
         }
       },
@@ -92,8 +87,7 @@
           "poi": "Eiscafe",
           "poiStation": "Bf Leeste",
           "homeStation": "Brinkum Bahnhofstraße",
-          "startTimer": 0,
-          "returnTimer": 10000,
+          "poiTimer": 10000,
           "info": "Heute endlich würden sie den Gutschein einlösen, der schon eine ganze Weile an der Pinnwand gehangen hatte. Ayla freut sich auf einen fröhlichen Familiennachmittag mit ihrer Tochter Amira und ihrem Mann Tom im Eiscafé ihres Schwagers. Sie hatten sich eine Weile nicht gesehen. Aber jetzt ist der Weg nicht nur ein Katzensprung, sondern auch wunderbar entspannt. Denkt sie."
         }
       },
@@ -108,8 +102,7 @@
           "poi": "Eiscafe",
           "poiStation": "Bf Leeste",
           "homeStation": "Brinkum Bahnhofstraße",
-          "startTimer": 0,
-          "returnTimer": 10000,
+          "poiTimer": 10000,
           "info": "Eigentlich ist Tom nicht für Abenteuer zu haben. Und ganz ehrlich: Die Bahnfahrt in die Nachbargemeinde schien ihm eine ziemlich sichere Sache zu sein. Er selbst hatte seiner Frau Ayla vorgeschlagen, das Auto stehen zu lassen und stattdessen in die Linie 8 zu steigen. Allerdings hatte er die Rechnung ohne seine Tochter Amina gemacht. Was ein Glück."
         }
       },
@@ -124,8 +117,7 @@
           "poi": "Eiscafe",
           "poiStation": "Bf Leeste",
           "homeStation": "Brinkum Bahnhofstraße",
-          "startTimer": 0,
-          "returnTimer": 10000,
+          "poiTimer": 10000,
           "info": "»Sticht der?«, fragt Amina und guckt den zwischen den Sitzen stehenden Kaktus neugierig an. Zusammen mit ihren Eltern Tom und Ayla macht die Fünfjährige einen Ausflug. Die Bahn ist ein abenteuerlicher Ort, an dem sich Erstaunliches beobachtenl ässt. Und das Beste: Sie hält fast direkt im Paradies – das Eis jedenfalls kann man beim Aussteigen schon riechen. Da ist Amira sich ganz sicher."
         }
       },
@@ -140,8 +132,7 @@
           "poi": "Discgolf Anlage",
           "poiStation": "Bassumer Straße",
           "homeStation": "Bf Leeste",
-          "startTimer": 0,
-          "returnTimer": 10000,
+          "poiTimer": 10000,
           "info": ""
         }
       },
@@ -156,8 +147,7 @@
           "poi": "Discgolf Anlage",
           "poiStation": "Bassumer Straße",
           "homeStation": "Bf Stuhr",
-          "startTimer": 0,
-          "returnTimer": 10000,
+          "poiTimer": 10000,
           "info": ""
         }
       },
@@ -172,8 +162,7 @@
           "poi": "Discgolf Anlage",
           "poiStation": "Bassumer Straße",
           "homeStation": "Bf Stuhr",
-          "startTimer": 0,
-          "returnTimer": 10000,
+          "poiTimer": 10000,
           "info": ""
         }
       }

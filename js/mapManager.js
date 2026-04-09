@@ -103,7 +103,7 @@ export class MapManager {
             new Train(routeCoords[0], 1, this.map),
             new Train(routeCoords[routeCoords.length - 1], -1, this.map)
         ];
-        this.trains.forEach(train => train.moveAlongRoute(routeCoords));
+        this.trains.forEach(train => train.moveAlongRoute(routeCoords, this.stationData.features));
 
         var route = {
             type: 'FeatureCollection',
@@ -172,7 +172,6 @@ export class MapManager {
                 document.querySelectorAll('.person-marker, .person-marker-small, .poi-container, .station-marker')
                     .forEach(el => el.classList.remove('marker-selected'));
 
-                this.selectedPerson = null;
             });
 
             this.map.on('zoom', () => {

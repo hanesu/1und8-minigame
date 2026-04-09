@@ -1,13 +1,3 @@
-export function findStationByName(stationName) {
-    return stationData.features.find(station => 
-        station.properties.name === stationName
-    );
-}
-export function findPOIByName(POIname) {
-    return poiData.features.find(POI => 
-        POI.properties.name === POIname
-    );
-}
 export function isNearLocation(position1, position2, tolerance = 0.0001) { 
     return Math.abs(position1.lng - position2[0]) < tolerance && 
            Math.abs(position1.lat - position2[1]) < tolerance;
