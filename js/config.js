@@ -4,7 +4,7 @@ export const MAP_CONFIG = {
     zoom: 14,
     minZoom: 12,
     maxZoom: 15,
-    maxBounds: [[8.680, 52.97], [8.870, 53.06]],
+    maxBounds: [[8.680, 52.97], [8.870, 53.055]],
     minPitch: 0,
     maxPitch: 0,
 
@@ -12,7 +12,7 @@ export const MAP_CONFIG = {
     trainStepSize: 0.00003, // Train speed
     trainWaitTimeAtStation: 1000, // Time to wait at each station in ms
     personAnimDuration: 1500,
-    pickupStationsAhead: 3,
+    pickupStationsAhead: 2,
 }
 
 export const svgCache = new Map();
