@@ -107,6 +107,13 @@ export class Person {
         const duration = 1500;
         const startTime = performance.now();
 
+        const popup = new maptilersdk.Popup({
+            className: 'destination-popup',
+            closeButton: false,
+            closeOnClick: true,
+            offset: 25
+        }).setHTML('&#x1F3E0;');
+
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
@@ -118,9 +125,22 @@ export class Person {
                 requestAnimationFrame(animate);
             } else {
                 // Return stations to original state
-                this.pickupStation = Station.allStations[this.personData.properties.homeStation]?.person;
-                this.dropoffStation = Station.allStations[this.personData.properties.poiStation]?.person;
+                this.pickupStation = Station.allStations[this.personData.properties.homeStation] || {
+                    name: this.personData.properties.homeStation,
+                    location: null,
+                };
+                this.dropoffStation = Station.allStations[this.personData.properties.poiStation] || {
+                    name: this.personData.properties.poiStation,
+                    location: null,
+                };
                 this.isReturning = false;
+                this.journeyCompleted = true;
+                this.marker.setPopup(popup);
+                this.marker.togglePopup();
+
+                setTimeout(() => {
+                    popup.remove();
+                }, MAP_CONFIG.popupTimer);
             }
         };
         requestAnimationFrame(animate);
@@ -582,6 +602,17 @@ export class Train {
 
                 requestAnimationFrame(animate);
             } else {
+                // if all people are back home, reset all people to initial state
+                const allCompleted = Object.values(Person.allPeople).every(person => person.journeyCompleted); 
+                if (allCompleted) {
+                    console.log("All journeys completed, resetting all people to initial state...");
+                    Object.values(Person.allPeople).forEach(person => {
+                        person.journeyCompleted = false;
+                        person.isReadyForPickup = false;
+                        person.isReadyToMoveToStation = true;
+                    });
+                }
+
                 // Reached end of route, reverse direction
                 setTimeout(() => {
                     this.direction *= -1;
@@ -590,8 +621,9 @@ export class Train {
                     this.marker.setLngLat(route[currentIndex]);
                     lastStationIndex = null;
                     lastFrameTime = null;
+
                     requestAnimationFrame(animate);
-                }, 10000);
+                }, 1000);
             }
         };
 

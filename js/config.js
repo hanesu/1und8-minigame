@@ -9,10 +9,11 @@ export const MAP_CONFIG = {
     maxPitch: 0,
 
     defaultPOITimer: 10000, // Default time a person spends at a POI in ms
-    trainSpeed: 0.0058, // Train speed in coordinate units per second
+    trainSpeed: 0.025, // Train speed in coordinate units per second
     trainWaitTimeAtStation: 1000, // Time to wait at each station in ms
-    personAnimDuration: 1500,
+    personAnimDuration: 150,
     pickupStationsAhead: 2,
+    popupTimer: 5000, // Time to show popups in ms
 }
 
 export const svgCache = new Map();
