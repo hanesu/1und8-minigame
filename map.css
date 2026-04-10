@@ -3,8 +3,8 @@
 }
 
 #map {
-    width: 100rem !important;
-    height: 50rem;
+    width: 80vw !important;
+    height: 80vh;
     position: relative !important;
 
     --marker-small: 40px;
@@ -240,7 +240,7 @@
     left: 50%;
     transform: translateX(-50%);
     padding: 2px;
-    border-radius: 10px;
+    border-radius: 5px;
     z-index: 2;
 }
 

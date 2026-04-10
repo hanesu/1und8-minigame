@@ -9,7 +9,7 @@ export const MAP_CONFIG = {
     maxPitch: 0,
 
     defaultPOITimer: 10000, // Default time a person spends at a POI in ms
-    trainStepSize: 0.00003, // Train speed
+    trainSpeed: 0.0058, // Train speed in coordinate units per second
     trainWaitTimeAtStation: 1000, // Time to wait at each station in ms
     personAnimDuration: 1500,
     pickupStationsAhead: 2,

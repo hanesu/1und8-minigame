@@ -152,19 +152,6 @@ export class MapManager {
                 }
             });
 
-            this.map.addLayer({
-                id: 'stations-layer',
-                type: 'symbol',
-                source: 'stations',
-                layout: {
-                    'icon-image': 'stationIcon',
-                    'icon-size': 0.175,
-                },
-                paint: {
-                        
-                }
-            });
-
             this.map.on('click', (e) => {
                 document.getElementById('map-overlay').classList.remove('darkened');
                 document.getElementById('info-box').classList.add('hidden');

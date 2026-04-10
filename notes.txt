@@ -57,6 +57,10 @@ Trains nicht überlappen/nebeneinander fahren lassen
       },
 
 
+Laptop:
+- Warum stations doppelt?
+- Train animation wonky
+- Map size
 
 
 

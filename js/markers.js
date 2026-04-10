@@ -474,7 +474,9 @@ export class Train {
         let isWaitingAtStation = false;
         let waitStartTime = null;
         const stationWaitTime = MAP_CONFIG.trainWaitTimeAtStation;
+        const maxFrameTime = 100;
         let lastStationIndex = null;
+        let lastFrameTime = null;
 
         /**
          * @param {Object} currentPos - Current position of the train {lng, lat}
@@ -501,6 +503,12 @@ export class Train {
         };
 
         const animate = (timestamp) => {
+            if (lastFrameTime === null) {
+                lastFrameTime = timestamp;
+            }
+
+            const deltaTime = Math.min(timestamp - lastFrameTime, maxFrameTime);
+            lastFrameTime = timestamp;
 
             if (isWaitingAtStation) {
                 console.log("Waiting at station...");
@@ -520,50 +528,56 @@ export class Train {
 
             if ((this.direction === 1 && currentIndex < destinationIndex) ||
                 (this.direction === -1 && currentIndex > destinationIndex)) {
+                let remainingDistance = MAP_CONFIG.trainSpeed * (deltaTime / 1000);
 
-                const currentPos = this.marker.getLngLat();
-                const nextIndex = currentIndex + this.direction;
-                const nextPos = route[nextIndex];
-
-                const step = MAP_CONFIG.trainStepSize;
-                const dx = nextPos[0] - currentPos.lng;
-                const dy = nextPos[1] - currentPos.lat;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                // Move to next point
-                if (distance < step) {
-                    this.marker.setLngLat(nextPos);
-                    currentIndex = nextIndex;
-                } else {
-                    const angle = Math.atan2(dy, dx);
-                    const newLng = currentPos.lng + step * Math.cos(angle);
-                    const newLat = currentPos.lat + step * Math.sin(angle);
-                    this.marker.setLngLat([newLng, newLat]);
-                }
-
-                const reachedStation = stationByRouteIndex.get(currentIndex);
-
-                if (
-                    reachedStation &&
-                    lastStationIndex !== reachedStation.stationListIndex &&
-                    shouldStopAtStation(
-                        {lng: reachedStation.coordinates[0], lat: reachedStation.coordinates[1]},
-                        reachedStation.stationListIndex
-                    )
+                while (
+                    remainingDistance > 0 &&
+                    ((this.direction === 1 && currentIndex < destinationIndex) ||
+                    (this.direction === -1 && currentIndex > destinationIndex))
                 ) {
-                    this.dropoffPassengersAtStation(
-                        {lng: reachedStation.coordinates[0], lat: reachedStation.coordinates[1]}
-                    );
-                    this.pickupPassengersAtStation(
-                        {lng: reachedStation.coordinates[0], lat: reachedStation.coordinates[1]},
-                        reachedStation.stationListIndex,
-                        stationRouteIndices
-                    );
-                    lastStationIndex = reachedStation.stationListIndex;
-                    waitStartTime = timestamp;
-                    isWaitingAtStation = true;
-                    requestAnimationFrame(animate);
-                    return;
+                    const currentPos = this.marker.getLngLat();
+                    const nextIndex = currentIndex + this.direction;
+                    const nextPos = route[nextIndex];
+                    const dx = nextPos[0] - currentPos.lng;
+                    const dy = nextPos[1] - currentPos.lat;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance <= remainingDistance) {
+                        this.marker.setLngLat(nextPos);
+                        currentIndex = nextIndex;
+                        remainingDistance -= distance;
+
+                        const reachedStation = stationByRouteIndex.get(currentIndex);
+
+                        if (
+                            reachedStation &&
+                            lastStationIndex !== reachedStation.stationListIndex &&
+                            shouldStopAtStation(
+                                {lng: reachedStation.coordinates[0], lat: reachedStation.coordinates[1]},
+                                reachedStation.stationListIndex
+                            )
+                        ) {
+                            this.dropoffPassengersAtStation(
+                                {lng: reachedStation.coordinates[0], lat: reachedStation.coordinates[1]}
+                            );
+                            this.pickupPassengersAtStation(
+                                {lng: reachedStation.coordinates[0], lat: reachedStation.coordinates[1]},
+                                reachedStation.stationListIndex,
+                                stationRouteIndices
+                            );
+                            lastStationIndex = reachedStation.stationListIndex;
+                            waitStartTime = timestamp;
+                            isWaitingAtStation = true;
+                            requestAnimationFrame(animate);
+                            return;
+                        }
+                    } else {
+                        const ratio = remainingDistance / distance;
+                        const newLng = currentPos.lng + dx * ratio;
+                        const newLat = currentPos.lat + dy * ratio;
+                        this.marker.setLngLat([newLng, newLat]);
+                        remainingDistance = 0;
+                    }
                 }
 
                 requestAnimationFrame(animate);
@@ -575,6 +589,7 @@ export class Train {
                     destinationIndex = this.direction === 1 ? route.length - 1 : 0;
                     this.marker.setLngLat(route[currentIndex]);
                     lastStationIndex = null;
+                    lastFrameTime = null;
                     requestAnimationFrame(animate);
                 }, 10000);
             }
