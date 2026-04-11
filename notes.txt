@@ -75,9 +75,12 @@ Laptop:
 - Separate station indeces ✓
 
 09.04.2026:
-- Simulation reset
+- Simulation reset ✓
 - peopleMarker at POI scaling issue
 - Holger und Lukas gleichzeitig ankommen
+
+10.04.2026:
+- Day/Night Cycle?
 
 
 Vor Abgabe:
