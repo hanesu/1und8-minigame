@@ -152,10 +152,10 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.72078930167309, 53.023839783316376]
+          "coordinates": [8.783887910061365, 53.01817890773995]
         },
         "properties": {
-          "name": "Industriegebiet???",
+          "name": "Lagerhalle",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
           "image": "./img/poi/Lagerhalle.svg"
         }

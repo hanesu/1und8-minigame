@@ -159,8 +159,8 @@
         },
         "properties": {
           "name": "Mike",
-          "poi": "Discgolf Anlage",
-          "poiStation": "Bassumer Straße",
+          "poi": "Lagerhalle",
+          "poiStation": "Brinkum Bahnhofstraße",
           "homeStation": "Bf Stuhr",
           "poiTimer": 10000,
           "info": ""

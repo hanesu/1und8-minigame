@@ -66,7 +66,7 @@ Laptop:
 
 06.04.2026:
 - resetSimulation bzw areAllPeopleHome in moveToHome
-- moveAlongRoute scheint noch alten Code zu haben
+- moveAlongRoute scheint noch alten Code zu haben ✓
 - trains erschaffen in mapManager ✓
 - feedback gleichbleibende POIs
 
@@ -77,6 +77,7 @@ Laptop:
 09.04.2026:
 - Simulation reset
 - peopleMarker at POI scaling issue
+- Holger und Lukas gleichzeitig ankommen
 
 
 Vor Abgabe:
@@ -85,3 +86,4 @@ Vor Abgabe:
 - Cookie Banner
 - Console logs
 - Holger icon
+- Lagerhalle Name
