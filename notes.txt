@@ -65,7 +65,7 @@ Laptop:
 
 
 06.04.2026:
-- resetSimulation bzw areAllPeopleHome in moveToHome
+- resetSimulation bzw areAllPeopleHome in moveToHome ✓
 - moveAlongRoute scheint noch alten Code zu haben ✓
 - trains erschaffen in mapManager ✓
 - feedback gleichbleibende POIs
@@ -76,17 +76,33 @@ Laptop:
 
 09.04.2026:
 - Simulation reset ✓
-- peopleMarker at POI scaling issue
-- Holger und Lukas gleichzeitig ankommen
+- peopleMarker at POI scaling issue (✓)
+- Holger und Lukas gleichzeitig ankommen -> Abläufe
 
 10.04.2026:
 - Day/Night Cycle?
 
+22.04.2026:
+- Abläufe
+
+Fragen Julia:
+- Vollständigkeit
+- Abläufe
+- Start-Pause-Knopf? Wenn ja wie?
+- Tag/Nacht Zyklus?
+
+Gespräch Julia:
+- Berta und Dorothea treffen sich in der Bahn
+- Mike Start station
+- Holger und Lukas treffen sich
+- POI Texte anzeigen lassen
+- POI Mehr erfahren hidden machen
 
 Vor Abgabe:
-- Train Speed
+- Vollständigkeit
 - Start-Pause-Knopf
 - Cookie Banner
 - Console logs
 - Holger icon
 - Lagerhalle Name
+- Links zu Website Abschnitten

@@ -9,7 +9,7 @@
         },
         "properties": {
           "name": "Rathaus Stuhr",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "Stadtplanung, Kinderbetreuung, Freizeitangebote – hier bekommt man Antworten auf die wichtigsten Fragen rund um das Leben in der Gemeinde.",
           "image": "./img/poi/RathausStuhr.svg",
           "peoplePosition": "right"
         }
@@ -22,7 +22,7 @@
         },
         "properties": {
           "name": "KGS-Leeste",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "Dreh- und Ausgangspunkt ins Leben ist für Kinder und Jugendlichen die mit dem Niedersächsischen Staatspreis für Architektur ausgezeichnete Kooperative Gesamtschule.",
           "image": "./img/poi/KGS-Leeste.svg"
         }
       },
@@ -34,7 +34,7 @@
         },
         "properties": {
           "name": "KGS Stuhr-Brinkum",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "Gemeinsam ist man schlauer: In Stuhr-Brinkum treffen sich rund 1.340 Kinder und Jugendliche aus 39 Nationen in der Kooperativen Gesamtschule.",
           "image": "./img/poi/KGS-StuhrBrinkum.svg"
         }
       },
@@ -42,23 +42,11 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.816366153977626, 52.987983571242554]
-        },
-        "properties": {
-          "name": "Seniorenzentrum Weyhe",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "./img/poi/SeniorenzentrumWeyhe.svg"
-        }
-      },
-      {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [8.81647045531071, 52.99023471746573]
+          "coordinates": [8.81547343174178, 52.9879263380947]
         },
         "properties": {
           "name": "Eiscafe",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "Lust auf Eis? Oder lieber einen Cappuccino? Egal, hier gibt’s sommers wie winters beides und mehr. Klönschnack inklusive.",
           "image": "./img/poi/Eiscafe.svg"
         }
       },
@@ -70,7 +58,7 @@
         },
         "properties": {
           "name": "Kulturscheune Weyhe",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "Bücher, Bildung und guter Kaffee: In der Kulturscheune lässt sich nicht nur fantastische Architektur erleben, sondern auch ganz prima die Zeit verbringen.",
           "image": "./img/poi/KulturscheuneBibliothek.svg"
         }
       },
@@ -81,9 +69,9 @@
           "coordinates": [8.82254609491352, 52.993303011664936]
         },
         "properties": {
-          "name": "Famila",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-          "image": "./img/poi/Famila.svg",
+          "name": "Supermarkt",
+          "info": "In Leesters Vollsortimenter lässt sich der Wocheneinkauf ganz bequem mit dem Nachbarschaftstreffen an der Käsetheke kombinieren.",
+          "image": "./img/poi/Supermarkt.svg",
           "peoplePosition": "right"
         }
       },
@@ -107,7 +95,7 @@
         },
         "properties": {
           "name": "Discgolf Anlage",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "Das Runde muss ins Körbchen: Auf dem familienfreundlichen Parcours kann man auf neun Bahnen gemeinsam die Frisbee fliegen lassen.",
           "image": "./img/poi/Discgolfanlage.svg",
           "peoplePosition": "right"
         }
@@ -120,7 +108,7 @@
         },
         "properties": {
           "name": "Sportanlage Moordeich",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "Ob Fußball, Leichtathletik, Tennis oder einfach nur Schaukeln und Rutschen – alles geht. Bewegt euch!",
           "image": "./img/poi/Sportanlage-Moordeich.svg"
         }
       },
@@ -132,7 +120,7 @@
         },
         "properties": {
           "name": "Bahnhof Leeste",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "Am Leester Bahnhof teilen sich Pingelheini und Güterzüge die Gleise bald mit der Linie 8. Fragen dazu? Im Infopoint gibt es Antworten. – Nostalgie trifft Zukunft.",
           "image": "./img/poi/BahnhofLeeste.svg"
         }
       },
@@ -144,7 +132,7 @@
         },
         "properties": {
           "name": "Friedhof Huchting",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "Aus dem einst kleinen Dorffriedhof wurde nach zweimaliger Erweiterung eine heute 7,1 ha umfassende Grünanlage – in der sich wunderbar in Ruhe spazieren lässt.",
           "image": "./img/poi/FriedhofHuchting.svg"
         }
       },
@@ -152,10 +140,10 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.783887910061365, 53.01817890773995]
+          "coordinates": [8.771819330941064, 53.022935685457774]
         },
         "properties": {
-          "name": "Lagerhalle",
+          "name": "Gewerbegebiet Stuhrbaum",
           "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
           "image": "./img/poi/Lagerhalle.svg"
         }

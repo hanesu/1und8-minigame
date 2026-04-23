@@ -14,6 +14,14 @@ export class MapManager {
         this.selectedMarker = null;
     }
 
+    pauseAllMarkers() {
+        this.canSelectPerson = false;
+        Object.values(Person.allPeople).forEach(person => person.pause());
+        Object.values(POI.allPOIs).forEach(poi => poi.pause());
+        Object.values(Station.allStations).forEach(station => station.pause());
+        this.trains.forEach(train => train.pause());
+    }
+
     selectPerson = (person) => {
         if (!this.canSelectPerson) return;
 
@@ -160,7 +168,7 @@ export class MapManager {
                     .forEach(el => el.classList.remove('marker-selected'));
 
             });
-
+             /* Zoom-based scaling, has problems with people icons
             this.map.on('zoom', () => {
                 const zoom = this.map.getZoom();
                 const scale = Math.pow(2, zoom - 14); // adjust base zoom
@@ -168,6 +176,7 @@ export class MapManager {
                     el.style.transform = `scale(${scale})`;
                 });
                 });
+            */
         });
     }
 
