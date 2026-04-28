@@ -100,7 +100,6 @@ export class Person {
      * moves Person from dropoff station back to home location. Also resets pickup and dropoff stations
      */
     moveToHome() {
-        console.log(`Moving ${this.name} back home...`);
         const start = this.marker.getLngLat();
         const startLngLat = [start.lng, start.lat];
         const endLngLat = this.home;
@@ -531,7 +530,6 @@ export class Train {
             lastFrameTime = timestamp;
 
             if (isWaitingAtStation) {
-                console.log("Waiting at station...");
                 if (!waitStartTime) waitStartTime = timestamp;
 
                 const waitElapsed = timestamp - waitStartTime;

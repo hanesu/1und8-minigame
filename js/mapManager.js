@@ -48,9 +48,10 @@ export class MapManager {
         document.getElementById('info-title').innerHTML = poi.properties.name;
         document.getElementById('info-image').classList.add('hidden');
         document.getElementById('info-ul').classList.add('hidden');
-        document.getElementById('info-text').innerHTML = '';
+        document.getElementById('info-text').innerHTML = poi.properties.info;
         document.getElementById('map-overlay').classList.add('darkened');
         document.getElementById('info-box').classList.remove('hidden');
+        document.getElementById('info-button-wrapper').classList.add('hidden');
 
         document.querySelectorAll('.person-marker, .person-marker-small, .poi-container, .station-marker')
             .forEach(el => el.classList.remove('marker-selected'));

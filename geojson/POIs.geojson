@@ -83,7 +83,7 @@
         },
         "properties": {
           "name": "Hochhaus Moordeich",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "N/A",
           "image": "./img/poi/HochhausMoordeich.svg"
         }
       },
@@ -144,7 +144,7 @@
         },
         "properties": {
           "name": "Gewerbegebiet Stuhrbaum",
-          "info": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+          "info": "N/A",
           "image": "./img/poi/Lagerhalle.svg"
         }
       }

@@ -40,7 +40,7 @@
         "properties": {
           "name": "Merit",
           "poi": "KGS Stuhr-Brinkum",
-          "poiStation": "Hallenbad",
+          "poiStation": "Studtriede",
           "homeStation": "Dovemoorstraße",
           "poiTimer": 20000,
           "info": "Tik Toks und Videos sind ihr größtes Hobby – und ihr Traum. Später will sie Influencerin werden. Reisen, berühmt sein. Jetzt ist aber schon mal gut, dass sie nichtmehr von Mama oder Papa überall hingefahren werden muss. Dafür ist sie echt auch zu alt. Peinlich ist das, wenn sie mit den Freundinnen shoppen will und die Eltern sind immer irgendwie dabei. Ehrlich, geht gar nicht. Da lieber Bahn fahren."
@@ -55,7 +55,7 @@
         "properties": {
           "name": "Natascha",
           "poi": "KGS Stuhr-Brinkum",
-          "poiStation": "Hallenbad",
+          "poiStation": "Studtriede",
           "homeStation": "Stuhrbaum",
           "poiTimer": 20000,
           "info": "Pferde sind ihr Hobby – jetzt sag keiner: Typisch Mädchen. Dass kann Natascha nicht leiden. Reittherapeutin ist ein echter Beruf. Gerade macht sie ein Praktikum auf dem Hof, denkt an ihre Zukunft – und Finn, den findet sie nämlich echt süß. Für ihre Eltern ist sie noch »die Kleine«. Das nervt zwar, dass sie sich Sorgen machen, ist aber okay. Und wenn sie die Bahn nimmt, darf sie jetzt auch mal später heimkommen."
@@ -70,9 +70,9 @@
         "properties": {
           "name": "Finn",
           "poi": "KGS Stuhr-Brinkum",
-          "poiStation": "Hallenbad",
+          "poiStation": "Studtriede",
           "homeStation": "Bf Leeste",
-          "poiTimer": 15000,
+          "poiTimer": 17000,
           "info": "Finn ist gerade 15 Jahre alt geworden - und hat das gebührend gefeiert. Zusammen mit seinen Freunden ist er unterwegs gewesen bis – naja, länger als eigentlich erlaubt. Aber mit der Bahn war er schnell zuhause. Früher musste er immer rumkutschiert werden - zum Handball-Training nach Stuhr, zu seinen Freunden und so. Jetzt fährt er Bahn und ist völlig unabhängig. Das ist richtig toll!"
         }
       },
@@ -125,14 +125,14 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.81176369157591, 52.992949781447265]
+          "coordinates": [8.801808883251686, 52.99958568020032]
         },
         "properties": {
           "name": "Holger",
           "poi": "Discgolf Anlage",
           "poiStation": "Hallenbad",
-          "homeStation": "Bf Leeste",
-          "poiTimer": 10000,
+          "homeStation": "Wittenkamp",
+          "poiTimer": 30000,
           "info": "Nach seiner Scheidung steht Holger am Beginn eines neuen Lebensabschnitts: Radfahren, fitter werden, mehr Zeit mit seinem Sohn verbringen und überhaupt bewusster leben. Erster Schritt: Kauf einer Monatskarte für die Bahn. Das sind quasi zwei Fliegen mit einer Klappe: weniger Auto, mehr Bewegung. Sein Motto: Langsam anfangen und erstmal zur Haltestelle gehen."
         }
       },
@@ -155,14 +155,14 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.749734377580126, 53.02322659461627]
+          "coordinates": [8.78614263595991, 53.00098649299225]
         },
         "properties": {
           "name": "Mike",
           "poi": "Gewerbegebiet Stuhrbaum",
-          "poiStation": "Bf Brinkum",
-          "homeStation": "Stuhr, Rathaus",
-          "poiTimer": 10000,
+          "poiStation": "Stuhrbaum",
+          "homeStation": "Bf Erichshof",
+          "poiTimer": 20000,
           "info": "Eigentlich gibt es kein schlechtes Wetter und trotzdem steigt Mike an manchen Tagen in die Bahn, um verlässlich zur Arbeit in Moordeich zu fahren. Stress nämlich kann er überhaupt nicht leiden. Damit die Bewegung trotzdem nicht zu kurz kommt, geht der Sportbegeisterte eine Station weiter als notwendig. Bis zum Haltepunkt Studtriede behält er den Schrittzähler auf seinem Handy im Blick. Die Spielergebnisse lassen sich ganz nebenbei auch ablesen. Damit seine Neffen nicht besser informiert sind als er."
         }
       }
