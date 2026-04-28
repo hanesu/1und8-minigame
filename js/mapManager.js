@@ -37,6 +37,7 @@ export class MapManager {
         document.getElementById('poi-image-container').innerHTML = '';
         document.getElementById('map-overlay').classList.add('darkened');
         document.getElementById('info-box').classList.remove('hidden');
+        document.getElementById('info-button-wrapper').classList.remove('hidden');
 
         document.querySelectorAll('.person-marker, .person-marker-small, .poi-container, .station-marker')
             .forEach(el => el.classList.remove('marker-selected'));
@@ -67,6 +68,7 @@ export class MapManager {
         document.getElementById('info-text').innerHTML = '';
         document.getElementById('map-overlay').classList.add('darkened');
         document.getElementById('info-box').classList.remove('hidden');
+        document.getElementById('info-button-wrapper').classList.add('hidden');
 
         document.querySelectorAll('.person-marker, .person-marker-small, .poi-container, .station-marker')
             .forEach(el => el.classList.remove('marker-selected'));
