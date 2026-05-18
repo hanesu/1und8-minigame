@@ -46,6 +46,7 @@ export class MapManager {
     selectPOI = (poi) => {
         this.selectedMarker = POI.allPOIs[poi.properties.name].marker;
 
+        document.getElementById('poi-image-container').innerHTML = `<img id="poi-image" src="${poi.properties.image}">`;
         document.getElementById('info-title').innerHTML = poi.properties.name;
         document.getElementById('info-image').classList.add('hidden');
         document.getElementById('info-ul').classList.add('hidden');

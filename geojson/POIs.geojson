@@ -5,7 +5,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.752063349933256, 53.02789850158786]
+          "coordinates": [8.756, 53.02789850158786]
         },
         "properties": {
           "name": "Rathaus Stuhr",
@@ -18,7 +18,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.818663148468213, 52.991340621645305]
+          "coordinates": [8.825, 52.989]
         },
         "properties": {
           "name": "KGS-Leeste",
@@ -42,7 +42,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.81547343174178, 52.9879263380947]
+          "coordinates": [8.81547343174178, 52.985]
         },
         "properties": {
           "name": "Eiscafe",
@@ -54,7 +54,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.816322079915443, 52.98545860353071]
+          "coordinates": [8.816322079915443, 52.98]
         },
         "properties": {
           "name": "Kulturscheune Weyhe",
@@ -66,7 +66,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.82254609491352, 52.993303011664936]
+          "coordinates": [8.821, 52.992]
         },
         "properties": {
           "name": "Supermarkt",
@@ -79,7 +79,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.728978282218363, 53.03505349027752]
+          "coordinates": [8.7335, 53.035]
         },
         "properties": {
           "name": "Hochhaus Moordeich",
@@ -116,7 +116,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.818903587848316, 52.9956918308363]
+          "coordinates": [8.818903587848316, 52.997]
         },
         "properties": {
           "name": "Bahnhof Leeste",
@@ -128,7 +128,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.729365820937085, 53.0373177371783]
+          "coordinates": [8.735, 53.04]
         },
         "properties": {
           "name": "Friedhof Huchting",

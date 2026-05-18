@@ -5,7 +5,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.727488508968516, 53.02883996016038]
+          "coordinates": [8.7265, 53.0296]
         },
         "properties": {
           "name": "Berta",
@@ -20,7 +20,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.74032759702164, 53.03148012380614]
+          "coordinates": [8.7435, 53.0316]
         },
         "properties": {
           "name": "Dorothea",
@@ -35,7 +35,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.728477220921802, 53.03623659384103]
+          "coordinates": [8.7225, 53.038]
         },
         "properties": {
           "name": "Merit",
@@ -50,7 +50,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.767089823022214, 53.01853926917435]
+          "coordinates": [8.767089823022214, 53.018]
         },
         "properties": {
           "name": "Natascha",

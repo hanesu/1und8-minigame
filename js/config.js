@@ -1,10 +1,10 @@
 export const MAP_CONFIG = {
     apiKey: '9X2VSCQEbqyH6TCJc0zM', // ! Replace this and protect via whitelist in maptiler account
     center: [8.768807320860198, 53.01938559330482],
-    zoom: 14,
-    minZoom: 12,
-    maxZoom: 15,
-    maxBounds: [[8.680, 52.97], [8.870, 53.055]],
+    zoom: 13,
+    minZoom: 13,
+    maxZoom: 13,
+    maxBounds: [[8.69, 52.975], [8.8658, 53.052]],
     minPitch: 0,
     maxPitch: 0,
 
