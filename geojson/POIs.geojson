@@ -83,7 +83,7 @@
         },
         "properties": {
           "name": "Hochhaus Moordeich",
-          "info": "N/A",
+          "info": "Das Haus ist nicht nur hoch, sondern für viele eine bekannte Adresse, wenn der Hunger kommt. Seit über vierzig Jahren wird man hier bestens verköstigt.",
           "image": "./img/poi/HochhausMoordeich.svg"
         }
       },
@@ -91,7 +91,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.779230905044622, 53.007851629115316]
+          "coordinates": [8.779230905044622, 53.008851629115316]
         },
         "properties": {
           "name": "Discgolf Anlage",
@@ -144,7 +144,7 @@
         },
         "properties": {
           "name": "Gewerbegebiet Stuhrbaum",
-          "info": "N/A",
+          "info": "Metallbau, Verpackungen, Beton, Elektrotechnik oder Klimaservice: Auf einer Gesamtfläche von über 500.000 qm lässt sich inhaltlich einiges unterbringen.",
           "image": "./img/poi/Lagerhalle.svg"
         }
       }

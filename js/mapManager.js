@@ -22,6 +22,14 @@ export class MapManager {
         this.trains.forEach(train => train.pause());
     }
 
+    closeInfoBox() {
+        document.getElementById('map-overlay').classList.remove('darkened');
+        document.getElementById('info-box').classList.add('hidden');
+        document.querySelectorAll('.person-marker, .person-marker-small, .poi-container, .station-marker')
+            .forEach(el => el.classList.remove('marker-selected'));
+        this.selectedMarker = null;
+    }
+
     selectPerson = (person) => {
         if (!this.canSelectPerson) return;
 
@@ -63,10 +71,11 @@ export class MapManager {
     selectStation = (station) => {
         this.selectedMarker = Station.allStations[station.properties.name].marker;
 
+        document.getElementById('poi-image-container').innerHTML = '';
         document.getElementById('info-title').innerHTML = station.properties.name;
         document.getElementById('info-image').classList.add('hidden');
         document.getElementById('info-ul').classList.add('hidden');
-        document.getElementById('info-text').innerHTML = '';
+        document.getElementById('info-text').innerHTML = station.properties.info;
         document.getElementById('map-overlay').classList.add('darkened');
         document.getElementById('info-box').classList.remove('hidden');
         document.getElementById('info-button-wrapper').classList.add('hidden');
@@ -165,12 +174,7 @@ export class MapManager {
             });
 
             this.map.on('click', (e) => {
-                document.getElementById('map-overlay').classList.remove('darkened');
-                document.getElementById('info-box').classList.add('hidden');
-                
-                document.querySelectorAll('.person-marker, .person-marker-small, .poi-container, .station-marker')
-                    .forEach(el => el.classList.remove('marker-selected'));
-
+                this.closeInfoBox();
             });
              /* Zoom-based scaling, has problems with people icons
             this.map.on('zoom', () => {
@@ -181,6 +185,14 @@ export class MapManager {
                 });
                 });
             */
+
+            this.map.dragRotate.disable();
+            this.map.keyboard.disable();
+        });
+
+        document.getElementById('close-button').addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.closeInfoBox();
         });
     }
 

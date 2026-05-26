@@ -503,6 +503,7 @@ export class Train {
          * @returns {boolean} whether the train should stop at this station
          */
         const shouldStopAtStation = (currentPos, currentStationIndex) => {
+            /* Removing this for now so that the train always stops
             // Stop if we have a passenger to drop off at this location
             const isDropoffStation = this.passengers.some(passenger => {
                 const dropoffStation = passenger.dropoffStation;
@@ -519,6 +520,8 @@ export class Train {
             ).length > 0;
 
             return isDropoffStation || hasPickup;
+            */
+           return true;
         };
 
         const animate = (timestamp) => {

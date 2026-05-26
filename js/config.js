@@ -7,6 +7,8 @@ export const MAP_CONFIG = {
     maxBounds: [[8.69, 52.975], [8.8658, 53.052]],
     minPitch: 0,
     maxPitch: 0,
+    navigationControl: false,
+    geolocateControl: false,
 
     defaultPOITimer: 10000, // Default time a person spends at a POI in ms
     trainSpeed: 0.005, // Train speed in coordinate units per second

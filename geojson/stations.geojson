@@ -8,7 +8,8 @@
           "coordinates": [8.827590574221093, 52.99481587851374]
         },
         "properties": {
-          "name": "Hagendamm"
+          "name": "Hagendamm",
+          "info": "Am Ende wird es grün und ein klein bisschen gemütlich: Nach dem vorerst letzten Haltepunkt machen es sich die Bahnen in der Überliegeposition bequem."
         }
       },
       {
@@ -18,7 +19,8 @@
           "coordinates": [8.816503572799816, 52.9944576383352]
         },
         "properties": {
-          "name": "Bf Leeste"
+          "name": "Bf Leeste",
+          "info": "Hier ist was los: Neben Einkaufsmöglichkeiten bietet die Ladestraße etwas ganz Besonderes. Im Infopoint der Linie 8 erhält man Antworten und Wissenswertes."
         }
       },
       {
@@ -28,7 +30,8 @@
           "coordinates": [8.800123678098426, 52.998369223317454]
         },
         "properties": {
-          "name": "Wittenkamp"
+          "name": "Wittenkamp",
+          "info": "In ruhigen Bahnen: Nach dem Auf und Ab über die Bundesstraße hinweg gleitet die Linie 8 entspannt auf dem letzten Streckenabschnitt Richtung Weyhe-Leeste."
         }
       },
       {
@@ -38,7 +41,8 @@
           "coordinates": [8.789672677709683, 53.002096375090225]
         },
         "properties": {
-          "name": "Bf Erichshof"
+          "name": "Bf Erichshof",
+          "info": "Hier geht’s hoch hinaus: Die Querung der B6 erfordert nicht nur den Bau eines Überführungsbauwerks, es wird auch sonst ganz besonders drumherum."
         }
       },
       {
@@ -48,7 +52,8 @@
           "coordinates": [8.786343992046682, 53.00502511918821]
         },
         "properties": {
-          "name": "Studtriede"
+          "name": "Studtriede",
+          "info": "So gut wie überall: Der Haltepunkt an dieser Stelle der Streckenführung wird so besonders wie jeder vorherige und alle kommenden. Ganz sicher."
         }
       },
       {
@@ -58,7 +63,8 @@
           "coordinates": [8.785025308981856, 53.00845974436069]
         },
         "properties": {
-          "name": "Hallenbad"
+          "name": "Hallenbad",
+          "info": "Umstrukturierung für eine optimale Zuwegung: Damit die Bahnseige barrierefrei und bequem erreicht werden können, wird der Verkehrsraum rundherum neu organisiert."
         }
       },
       {
@@ -68,7 +74,8 @@
           "coordinates": [8.782767603929921, 53.01428183385314]
         },
         "properties": {
-          "name": "Bf Brinkum"
+          "name": "Bf Brinkum",
+          "info": "Alles wie gehabt und ganz neu: Die Bahnübergänge rund um den entstehenden Haltepunkt werden mit modernster Technik ausgestattet. Wie alle anderen auch."
         }
       },
       {
@@ -78,7 +85,8 @@
           "coordinates": [8.768807320860198, 53.01938559330482]
         },
         "properties": {
-          "name": "Stuhrbaum" 
+          "name": "Stuhrbaum",
+          "info": "Mitten hinein ins Gewerbegebiet: Dank des neuen Haltepunktes wird der Arbeitsweg für die eine und den anderen Berufstätige:n wunderbar bequem."
         }
       },
       {
@@ -88,7 +96,8 @@
           "coordinates": [8.747607592348695, 53.026581635632986]
         },
         "properties": {
-          "name": "Stuhr, Rathaus"
+          "name": "Stuhr, Rathaus",
+          "info": "Zurück zum Ursprung: Mit der Linie 8 wird der alte Bahnhof endlich wieder das, was er mal war, eine Ein- und Ausstiegsmöglichkeit für Reisende."
         }
       },
       {
@@ -98,7 +107,8 @@
           "coordinates": [8.738753072349676, 53.02940126579498]
         },
         "properties": {
-          "name": "Beethovenstraße"
+          "name": "Beethovenstraße",
+          "info": "Die Reaktivierung des Bestehenden: In Vergessenheit geraten war die Bahnlinie in diesem Streckenabschnitt nie. Jetzt bekommt sie sogar einen eigenen Haltepunkt."
         }
       },
       {
@@ -108,7 +118,8 @@
           "coordinates": [8.729351092739437, 53.032212218810244]
         },
         "properties": {
-          "name": "Hespenstraße"
+          "name": "Hespenstraße",
+          "info": "Zustiegsmöglichkeit und Brückenkunst: Weil die verkehrlichen Anforderungen steigen, wird hier neu gebaut, aufgeräumt und natürlich ausgeglichen."
         }
       },
       {
@@ -118,7 +129,8 @@
           "coordinates": [8.72595590543374, 53.0350401060421]
         },
         "properties": {
-          "name": "Bf Moordeich"
+          "name": "Bf Moordeich",
+          "info": "Neustrukturierung im großen Stil: Auf der »Haferflockenkreuzung« wird der gesamte Straßenraum umstrukturiert und neu gestaltet – damit bekommen alle genug Platz."
         }
       },
       {
@@ -128,7 +140,8 @@
           "coordinates": [8.725587814811306, 53.03861305149076]
         },
         "properties": {
-          "name": "Dovemoorstraße"
+          "name": "Dovemoorstraße",
+          "info": "Auf der BTE-Trasse unterwegs: Ab hier ist die Linie 8 Richtung Stuhr und Weyhe ganz für sich – und dann wird aus der Straßenbahn plötzlich eine Eisenbahn."
         }
       },
       {
@@ -138,7 +151,8 @@
           "coordinates": [8.728667008882447, 53.043550723558084]
         },
         "properties": {
-          "name": "Auf den Kahlken"
+          "name": "Auf den Kahlken",
+          "info": "Der letzte gemeinsame Haltepunkt: Während die Linie 1 im Anschluss Richtung Delfter Straße abbiegt, macht sich die Linie 8 auf den Weg Richtung Niedersachsen."
         }
       },
       {
