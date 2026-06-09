@@ -162,7 +162,8 @@
           "coordinates": [8.734226311739585, 53.04730594892187]
         },
         "properties": {
-          "name": "Willakedamm"
+          "name": "Robbenplate",
+          "info": "Hier ist alles neu: Mehr Fläche für Fußgänger:innen, mehr Platz für Radfahrende, ein sicherer Schulweg und die Haltestelle direkt vor der Tür – bequemer geht es kaum."
         }
       },
       {
@@ -172,7 +173,8 @@
           "coordinates": [8.74201783826018, 53.04861326696967]
         },
         "properties": {
-          "name": "Roland-Center"
+          "name": "Roland-Center",
+          "info": ""
         }
       }
     ]
