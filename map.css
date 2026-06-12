@@ -129,11 +129,12 @@
         background-color: var(--green);
         color: white;
         border: none;
-        padding: 15px 25px;
+        padding: 1.5rem 3rem;
         font-size: 1rem;
         cursor: pointer;
         border-radius: 0px;
         transition: all 0.3s ease-in-out;
+        margin-top: 2rem;
     }
     #info-button:hover {
         transform: scale(0.95);
