@@ -58,7 +58,7 @@
           "poiStation": "Studtriede",
           "homeStation": "Stuhrbaum",
           "poiTimer": 20000,
-          "info": "Pferde sind ihr Hobby – jetzt sag keiner: Typisch Mädchen. Dass kann Natascha nicht leiden. Reittherapeutin ist ein echter Beruf. Gerade macht sie ein Praktikum auf dem Hof, denkt an ihre Zukunft – und Finn, den findet sie nämlich echt süß. Für ihre Eltern ist sie noch »die Kleine«. Das nervt zwar, dass sie sich Sorgen machen, ist aber okay. Und wenn sie die Bahn nimmt, darf sie jetzt auch mal später heimkommen."
+          "info": "Pferde sind ihr Hobby – jetzt sag keiner: Typisch Mädchen. Dass kann Natascha nicht leiden. Reittherapeutin ist ein echter Beruf. Gerade macht sie ein Praktikum auf dem Hof, denkt an ihre Zukunft – und Fin, den findet sie nämlich echt süß. Für ihre Eltern ist sie noch »die Kleine«. Das nervt zwar, dass sie sich Sorgen machen, ist aber okay. Und wenn sie die Bahn nimmt, darf sie jetzt auch mal später heimkommen."
         }
       },
       {
@@ -68,12 +68,12 @@
           "coordinates": [8.81804923655388, 52.999040026304975]
         },
         "properties": {
-          "name": "Finn",
+          "name": "Fin",
           "poi": "KGS Stuhr-Brinkum",
           "poiStation": "Studtriede",
           "homeStation": "Bf Leeste",
           "poiTimer": 15000,
-          "info": "Finn ist gerade 15 Jahre alt geworden - und hat das gebührend gefeiert. Zusammen mit seinen Freunden ist er unterwegs gewesen bis – naja, länger als eigentlich erlaubt. Aber mit der Bahn war er schnell zuhause. Früher musste er immer rumkutschiert werden - zum Handball-Training nach Stuhr, zu seinen Freunden und so. Jetzt fährt er Bahn und ist völlig unabhängig. Das ist richtig toll!"
+          "info": "Fin ist gerade 15 Jahre alt geworden - und hat das gebührend gefeiert. Zusammen mit seinen Freunden ist er unterwegs gewesen bis – naja, länger als eigentlich erlaubt. Aber mit der Bahn war er schnell zuhause. Früher musste er immer rumkutschiert werden - zum Handball-Training nach Stuhr, zu seinen Freunden und so. Jetzt fährt er Bahn und ist völlig unabhängig. Das ist richtig toll!"
         }
       },
       {
