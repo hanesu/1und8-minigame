@@ -35,7 +35,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.7225, 53.038]
+          "coordinates": [8.72, 53.04]
         },
         "properties": {
           "name": "Merit",
@@ -50,7 +50,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.767089823022214, 53.018]
+          "coordinates": [8.764, 53.018]
         },
         "properties": {
           "name": "Natascha",
@@ -65,7 +65,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.81804923655388, 52.999040026304975]
+          "coordinates": [8.818, 53]
         },
         "properties": {
           "name": "Fin",
@@ -80,7 +80,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.776601268778547, 53.01326821603115]
+          "coordinates": [8.776, 53.0149]
         },
         "properties": {
           "name": "Ayla",
@@ -95,7 +95,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.776030067421488, 53.01275952817889]
+          "coordinates": [8.7736, 53.0125]
         },
         "properties": {
           "name": "Tom",
@@ -110,7 +110,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.77718683816085, 53.01276877666635]
+          "coordinates": [8.7784, 53.0125]
         },
         "properties": {
           "name": "Amina",
@@ -125,7 +125,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.801808883251686, 52.99958568020032]
+          "coordinates": [8.802, 53]
         },
         "properties": {
           "name": "Holger",
@@ -140,7 +140,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.749734377580126, 53.02322659461627]
+          "coordinates": [8.745, 53.0233]
         },
         "properties": {
           "name": "Lukas",
@@ -155,7 +155,7 @@
         "type": "Feature",
         "geometry": {
           "type": "Point",
-          "coordinates": [8.78614263595991, 53.00098649299225]
+          "coordinates": [8.786, 53.0005]
         },
         "properties": {
           "name": "Mike",
